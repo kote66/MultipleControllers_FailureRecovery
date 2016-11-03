@@ -72,6 +72,18 @@ public class BorderNodeFlow extends MakeFlow{
 					int priority = 200;
 					makexml.localBorderNodeFlow(node, IP, group_id, priority);
 					group_id++;
+					
+					//ループ障害への対応
+					//MakeGroup
+					//次タイセットのタイセットラベルを用いたフロー転送をするgroupを使う
+					
+					//MakeFlow
+					//node, IP, F_watch_port, group_id, priority, s_tielset_id
+					int in_port = local_F_watch_port;
+					int tieset_id = S_tieset_id;
+					int roop_priority = 400;
+					makexml.BorderNodeFlow_loop(node, IP, in_port, tieset_id, roop_priority);
+					group_id++;
 				}
 				//宛先がローカルコントローラ外
 				//スタート：エッジノードまたは境界ノード　ゴール：コントローラ内の中継ノード
@@ -119,6 +131,11 @@ public class BorderNodeFlow extends MakeFlow{
 						//IPからmplsを算出
 						String mpls = String.valueOf(node.host_node_map.get(IP).controller_id);
 						makexml.BorderNodeFlow(node, mpls, group_id, priority);
+						group_id++;
+						
+						//ループ障害への対応
+						//MakeGroup
+						//MakeFlow
 						group_id++;
 					}
 				}

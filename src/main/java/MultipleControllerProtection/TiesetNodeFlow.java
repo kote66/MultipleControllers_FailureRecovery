@@ -36,7 +36,7 @@ public class TiesetNodeFlow extends MakeFlow{
 	
 	public void makeFlow(Node node, int group_id, int tieset_id) throws ParserConfigurationException{
 			//String order_flow = makexml.tiesetflow(node.node_id, tieset.TiesetID);
-			int priority = 100;		
+			int priority = 150;		
 			//System.out.println(node.node_id);
 			makexml.tiesetflow(node, tieset_id, group_id, priority);
 	}

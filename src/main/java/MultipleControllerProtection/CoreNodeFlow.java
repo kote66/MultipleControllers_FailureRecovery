@@ -74,6 +74,11 @@ public class CoreNodeFlow  extends MakeFlow{
 				String mpls = String.valueOf(controller_id);
 				makexml.CoreNodeFlow(node, mpls, group_id, priority);
 				group_id++;
+				
+				//ループ障害への対応
+				//MakeGroup
+				//MakeFlow
+				group_id++;
 			}
 		}	
 	}

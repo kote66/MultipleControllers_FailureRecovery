@@ -91,11 +91,11 @@ public class MakeXML {
 		//迂回経路のbucket
 		Element backup_bucket = make_bucket(buckets);
 		make_bucket(backup_bucket, order0, order1, group_id_second, S_watch_port);
-		output_action(backup_bucket, S_watch_port, bucket_id1, order2);
-
+		backup_output_action(backup_bucket, S_watch_port, bucket_id1, order2);
+		
 		Document document = new Document(product);	
 		XMLOutputter xout = new XMLOutputter(XMLOUTPUT);
-		//System.out.println(xout.outputString(document));
+		System.out.println(xout.outputString(document));
 		
 		//flow_group_add
 		rest_request.PostXML(PostGroupUri(node.belong_to_IP), xout.outputString(document));
@@ -135,6 +135,34 @@ public class MakeXML {
 		mpls_match(match, mpls);
 		make_instructions(product, group_id);
 
+		Document document = new Document(product);
+		XMLOutputter xout = new XMLOutputter(XMLOUTPUT);
+		//System.out.println(xout.outputString(document));
+		
+		//flow_add
+		rest_request.PostXML(PostUri(node.belong_to_IP), xout.outputString(document));
+		node.flow_counter++;
+		return null;
+	}
+	
+	//ループ障害への対応
+	public String BorderNodeFlow_loop(Node node, String DstIP, int in_port_int, int group_id, int priority) throws ParserConfigurationException {
+		//宛先がローカルコントローラ内
+		Element product = make_flow_xml(node, priority);
+		Element match = make_match(product);
+		//DstIPをmatchにする
+		make_ethertype_match(match, "2048");
+		make_ip_match(match, DstIP+"/32");
+		Element in_port = new Element("in-port",ns);
+		String in_port_str = String.valueOf(in_port_int);
+		match.addContent(in_port);
+		in_port.addContent(in_port_str);
+		
+		
+		//vlan_match(match, group_id);
+		make_instructions(product, group_id);
+		
+		
 		Document document = new Document(product);
 		XMLOutputter xout = new XMLOutputter(XMLOUTPUT);
 		//System.out.println(xout.outputString(document));
@@ -710,6 +738,31 @@ public class MakeXML {
 		bucket.addContent(watch_port);
 		watch_port.addContent(output_port_str);
 	}
+	
+	private void backup_output_action(Element bucket, int output_port_int, int bucket_id_int, int order_int){
+		Element output_action = new Element("output-action",ns);
+		Element output_node_connector = new Element("output-node-connector",ns);
+		Element action = new Element("action",ns);
+		Element order = new Element("order",ns);
+		Element bucket_id = new Element("bucket-id",ns);
+		Element watch_port = new Element("watch_port",ns);
+		String output_port_str = String.valueOf(output_port_int);
+		String bucket_id_str = String.valueOf(bucket_id_int);
+		String order_str = String.valueOf(order_int);
+		
+		bucket.addContent(action);
+		action.addContent(output_action);
+		output_action.addContent(output_node_connector);
+		output_node_connector.addContent("INPORT");
+		action.addContent(order);
+		order.addContent(order_str);
+		
+		bucket.addContent(bucket_id);
+		bucket_id.addContent(bucket_id_str);
+		bucket.addContent(watch_port);
+		watch_port.addContent(output_port_str);
+	}
+	
 	private int decisionGroup_id(int group_id){
 		int return_group_id=0;
 		if(group_id < 2048){

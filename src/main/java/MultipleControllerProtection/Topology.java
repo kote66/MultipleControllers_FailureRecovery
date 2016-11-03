@@ -27,7 +27,7 @@ public class Topology {
 	List<TopologyInfo> topologyInfo = new ArrayList<TopologyInfo>();
 	//コントローラの数に応じてtestを変える
 	TopologyInfo test1 = new TopologyInfo();
-	TopologyInfo test2 = new TopologyInfo();
+	//TopologyInfo test2 = new TopologyInfo();
 	String host = "host";
 	List<Integer> globalNode_ID = new ArrayList<Integer>();	
 	List<String> global_src_tp = new ArrayList<String>();
@@ -38,7 +38,7 @@ public class Topology {
 	Topology(List<String> jsonlist) {
 		//コントローラの数に応じてtestを変える
 		topologyInfo.add(test1);
-		topologyInfo.add(test2);
+		//topologyInfo.add(test2);
 		for(int i = 0; i < jsonlist.size(); i++){
 			ObjectMapper mapper = new ObjectMapper();
 			try {
