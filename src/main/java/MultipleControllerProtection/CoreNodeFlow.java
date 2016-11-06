@@ -17,18 +17,6 @@ public class CoreNodeFlow  extends MakeFlow{
 		this.globalNode_ID = globalNode_ID;
 	}
 
-	//controller_idを繰り返す
-
-	//CoreNodeのを繰り返す
-
-
-	//接続しているノードで宛先コントローラのものを探し、転送する
-
-	//宛先コントローラで接続しているノードが存在しない場合、他のローカルコントローラ内のコアノードへ転送する
-
-	//group
-
-	//flow
 	//BorderNodeにフロー追加
 	public void CoreNodeFlow() throws ParserConfigurationException{
 		List<Node> coreNodeList = new ArrayList<Node>();
@@ -37,7 +25,6 @@ public class CoreNodeFlow  extends MakeFlow{
 		for(Node node : coreNodeList){
 			int group_id = 501;
 			for(int controller_id : node.controller_id_set){
-				//コアノードのcontroller_id以外を繰り返す
 				if(node.controller_id == controller_id){
 					//コアノードのcontroller_idと宛先controller_idが一致したらflowの設定はしない
 					continue;
@@ -54,6 +41,7 @@ public class CoreNodeFlow  extends MakeFlow{
 				//未実装
 				/*
 				//迂回経路（ローカルコントローラ内で一番近いコアノードへの転送）
+				//アルゴリズム全てのローカルコアノードから最短距離のノードを選び、転送
 				List<Node> local_shortest_node = findShortestPath(node, neighbor_node);
 				//System.out.println(local_shortest_node);
 				int local_tieset_id= findNextTieset(local_shortest_node);

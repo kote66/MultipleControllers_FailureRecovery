@@ -19,9 +19,6 @@ public class TiesetGraph {
 
 	public void MakeTiesetGraph(List<Integer> TiesetID) {
 		int n = TiesetID.size();
-		if (n == 1) {
-			return;
-		}
 		if (n > 1) {
 			for (int j = n; n - j < 1; j--) {
 				int EdgeNumber = 1;
@@ -33,6 +30,11 @@ public class TiesetGraph {
 				}
 			}
 		}
+		else if(n == 1){
+			TiesetGraph.addVertex(TiesetID.get(0));
+			//タイセットグラフがTopologyInfoではない
+		}
+		//TopologyInfoに代入
 	}
 
 	public Graph<Integer, TiesetEdge> getTiesetGraph() {

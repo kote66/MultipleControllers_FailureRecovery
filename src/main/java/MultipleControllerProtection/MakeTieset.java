@@ -34,9 +34,9 @@ public class MakeTieset {
 	Graph<Node, Integer> TreeGraph = new UndirectedSparseGraph<Node, Integer>();
 	List<Tieset> tiesetList = new ArrayList<Tieset>();
 	
-	MakeTieset(Graph<Node, Integer> graph, Node[] globalNode) {
+	MakeTieset(Graph<Node, Integer> graph, Node[] node) {
 		this.globalGraph = graph;
-		this.globalNode = globalNode;
+		this.globalNode = node;
 		//次数が最大のノードを引数を入れる
 		int node_id = findMaxOrder();
 		BFS_TREE(findNodebyGraph(node_id));
@@ -72,12 +72,18 @@ public class MakeTieset {
 	}
 	
 	private List<Pair<Node>> find_Complement_Tree(Graph<Node, Integer> TreeGraph, Graph<Node, Integer> globalGraph){
+		System.out.println("test"+globalGraph);
+		System.out.println("test"+globalGraph.getEdgeCount());
 		List<Pair<Node>> complement_tree = new ArrayList<Pair<Node>>();
 		for(int i = 0; i < globalGraph.getEdgeCount(); i++){
 			Pair<Node> test= globalGraph.getEndpoints(i);
 			for(int j = 0; j < TreeGraph.getEdgeCount(); j++){
 				Pair<Node> test2= TreeGraph.getEndpoints(j);
+				//Pairが存在しない（コントローラ毎にタイセット作る場合）
+				System.out.println(test);//nullになっている
+				System.out.println(test2);
 				if(test.getFirst().node_id == test2.getFirst().node_id && test.getSecond().node_id == test2.getSecond().node_id){
+					
 					break;
 				}
 				if(test.getFirst().node_id == test2.getSecond().node_id && test.getSecond().node_id == test2.getFirst().node_id){

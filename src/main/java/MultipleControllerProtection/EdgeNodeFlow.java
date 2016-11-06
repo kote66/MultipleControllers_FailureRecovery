@@ -41,30 +41,18 @@ public class EdgeNodeFlow extends MakeFlow{
 				//nodeと宛先ノードのcontroller_idが一致（ローカルコントローラ内）
 				if(node.host_node_map.get(IP).controller_id == node.controller_id){
 					//スタート：対象境界ノード、 ゴール：エッジノード
-					
-					//最短経路メソッドの引数を変える
-					//System.out.println("start:"+node+"goal"+node.host_node_map.get(IP));
 					List<Node> local_shortest_node = findShortestPath(node, node.host_node_map.get(IP));
-					//System.out.println("node:"+node.node_id);
-					//System.out.println("shortest"+local_shortest_node);
 					int local_tieset_id= findNextTieset(local_shortest_node);
 					//System.out.println("tieset_id"+local_tieset_id);
 					Tieset local_target_tieset = findTieset(local_tieset_id);
 					
-					//順方向
-					//タイセットID
-					//出力ポート
+					//順方向への出力ポート
 					int output_port = node.mapNextNode.get(local_shortest_node.get(1));
-					//System.out.println(output_port);
-					//System.out.println("node:"+node.node_id);
-					//System.out.println(output_port);
-					//System.out.println(local_shortest_node.get(1));
-					//System.out.println(local_tieset_id);
+
 					//逆方向
 					//タイセットIDからタイセットを算出
 					boolean local_order = JudgeOrder(local_tieset_id);
 					List<Node> local_reverseTiesetList = findReverseInfo(node, local_order, local_target_tieset);
-					//System.out.println(reverseTiesetList);
 					
 					//逆方向のタイセットID取得
 					int local_reverse_tieset_id = findReverseTiesetID(local_order, local_tieset_id);
