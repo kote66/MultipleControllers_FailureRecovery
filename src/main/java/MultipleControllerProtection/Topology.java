@@ -81,12 +81,14 @@ public class Topology {
 			maketieset_part[num] = new MakeTieset(topologyInfo.get(num).graph, topologyInfo.get(num).node);
 			topologyInfo.get(num).tiesetList =maketieset_part[num].tiesetList;
 			//System.out.println("tiesetList"+maketieset_part[num].tiesetList);
-			System.out.println("コントローラ毎のグラフ"+topologyInfo.get(num).graph);
+			System.out.println("コントローラ毎のグラフ");
+			System.out.println(topologyInfo.get(num).graph);
 			//System.out.println("pre"+topologyInfo.get(num).tiesetList.get(0).nodeList.get(1).TiesetID);
 			//maketieset_part[num]の中でタイセットが保存されている
 			addTiesetIDtoNode_part(num);
 			MakeTiesetGraph_part(num);
-			System.out.println("タイセットグラフ" + topologyInfo.get(num).TiesetGraph);
+			System.out.println("コントローラ毎のタイセットグラフ");
+			System.out.println(topologyInfo.get(num).TiesetGraph);
 			//Mainクラスへgraphとtiesetgraph情報を渡す
 		}
 	}
@@ -190,7 +192,6 @@ public class Topology {
 			SearchNode(dst_node).mapNextNode.put(SearchNode(src_node), dst_node_tp);
 			globalGraph.addEdge(i, SearchNode(src_node),SearchNode(dst_node));
 		}
-		System.out.println(globalGraph);
 	}
 
 	private void addEdge_local(List<String> src_tp, List<String> dst_tp,int num){

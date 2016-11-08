@@ -39,8 +39,6 @@ public class MakeTieset {
 		this.globalNode = node;
 		//次数が最大のノードを引数を入れる
 		int node_id = findMaxOrder();
-		//BFS関数を使っていない（各コントローラ）
-		System.out.println("ルートのid"+node_id);
 		BFS_TREE(findNodebyGraph(node_id));
 
 
@@ -79,10 +77,6 @@ public class MakeTieset {
 	}
 	
 	private List<Pair<Node>> find_Complement_Tree(Graph<Node, Integer> TreeGraph, Graph<Node, Integer> globalGraph){
-		//Treeが作られない
-		//System.out.println("Tree"+TreeGraph);
-		//System.out.println("test"+globalGraph);
-		//System.out.println("test"+globalGraph.getEdgeCount());
 		List<Pair<Node>> complement_tree = new ArrayList<Pair<Node>>();
 		for(int i = 0; i < globalGraph.getEdgeCount(); i++){
 			Pair<Node> test= globalGraph.getEndpoints(i);

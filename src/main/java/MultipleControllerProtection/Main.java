@@ -86,7 +86,7 @@ public class Main {
 		//複数コントローラの場合ノードに所属コントローラのIPを保持させる
 		topology.setControllerIP(ControllerIP1, ControllerIP2);
 		//テスト用
-		topology.test();
+		//topology.test();
 		
 		//フローエントリの追加
 		//MakeFlow makeflow = new MakeFlow();
@@ -106,8 +106,7 @@ public class Main {
 		CoreNodeFlow corenodeflow = new CoreNodeFlow(topology.tiesetList, topology.globalGraph, topology.TiesetGraph, topology.globalNode, topology.globalNode_ID);
 		corenodeflow.CoreNodeFlow();
 		
-		//コントローラ数繰り返す
-		
+		//コントローラ毎に作成したタイセットを用いてフローエントリを作成
 		for(int num = 0; num < jsonlist.size(); num++){
 			TiesetNodeFlow tiesetnodeflow_part = new TiesetNodeFlow(topology.topologyInfo.get(num).tiesetList, topology.topologyInfo.get(num).graph, topology.topologyInfo.get(num).TiesetGraph);
 			tiesetnodeflow_part.makeTiesetFlow();
