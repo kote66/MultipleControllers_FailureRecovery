@@ -39,7 +39,10 @@ public class MakeTieset {
 		this.globalNode = node;
 		//次数が最大のノードを引数を入れる
 		int node_id = findMaxOrder();
+		//BFS関数を使っていない（各コントローラ）
+		System.out.println("ルートのid"+node_id);
 		BFS_TREE(findNodebyGraph(node_id));
+
 
 		//補木を探す
 		List<Pair<Node>> complement_tree = find_Complement_Tree(TreeGraph, globalGraph);
@@ -57,8 +60,12 @@ public class MakeTieset {
 	    while(!queue.isEmpty()){
 	    		//キューから取り除き、Treeに追加
 	    		Node start_node =queue.remove();
+	    		
+	    		//System.out.println("キューに追加");
+	    		//System.out.println(start_node);
 	        TreeGraph.addVertex(start_node);
-	        
+	        //隣接ノードが存在しない
+	        //System.out.println("隣接ノード"+start_node.neighborNode);
 	        //対象ノードの子をキューへ追加
 	        	for(Node node:start_node.neighborNode){
 	    	        //TreeGraphにneighborNodeが含まれていなければキューに追加
@@ -72,16 +79,21 @@ public class MakeTieset {
 	}
 	
 	private List<Pair<Node>> find_Complement_Tree(Graph<Node, Integer> TreeGraph, Graph<Node, Integer> globalGraph){
-		System.out.println("test"+globalGraph);
-		System.out.println("test"+globalGraph.getEdgeCount());
+		//Treeが作られない
+		//System.out.println("Tree"+TreeGraph);
+		//System.out.println("test"+globalGraph);
+		//System.out.println("test"+globalGraph.getEdgeCount());
 		List<Pair<Node>> complement_tree = new ArrayList<Pair<Node>>();
 		for(int i = 0; i < globalGraph.getEdgeCount(); i++){
 			Pair<Node> test= globalGraph.getEndpoints(i);
+			//System.out.println(globalGraph.getEndpoints(i));
 			for(int j = 0; j < TreeGraph.getEdgeCount(); j++){
 				Pair<Node> test2= TreeGraph.getEndpoints(j);
-				//Pairが存在しない（コントローラ毎にタイセット作る場合）
-				System.out.println(test);//nullになっている
-				System.out.println(test2);
+				//TreeGraphが表示されない(存在しないかも)
+				//System.out.println(TreeGraph.getEndpoints(j));
+				//Pairは存在しない
+				//System.out.println(test);
+				//System.out.println(test2);
 				if(test.getFirst().node_id == test2.getFirst().node_id && test.getSecond().node_id == test2.getSecond().node_id){
 					
 					break;

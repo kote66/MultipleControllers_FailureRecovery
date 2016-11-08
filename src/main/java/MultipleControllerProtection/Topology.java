@@ -26,7 +26,7 @@ public class Topology {
 
 	//コントローラの数に応じて数を変える
 	TopologyInfo controller1 = new TopologyInfo();
-	//TopologyInfo controller2 = new TopologyInfo();
+	TopologyInfo controller2 = new TopologyInfo();
 
 	String host = "host";
 	List<Integer> globalNode_ID = new ArrayList<Integer>();	
@@ -38,7 +38,7 @@ public class Topology {
 	Topology(List<String> jsonlist) {
 		//コントローラの数に応じて数を変える
 		topologyInfo.add(controller1);
-		//topologyInfo.add(controller2);
+		topologyInfo.add(controller2);
 		for(int i = 0; i < jsonlist.size(); i++){
 			ObjectMapper mapper = new ObjectMapper();
 			try {
@@ -80,13 +80,14 @@ public class Topology {
 			addEdge_local(topologyInfo.get(num).source_tp, topologyInfo.get(num).dst_tp, num);
 			maketieset_part[num] = new MakeTieset(topologyInfo.get(num).graph, topologyInfo.get(num).node);
 			topologyInfo.get(num).tiesetList =maketieset_part[num].tiesetList;
-			System.out.println("tiesetList"+maketieset_part[num].tiesetList);
-			System.out.println("graph"+topologyInfo.get(num).graph);
+			//System.out.println("tiesetList"+maketieset_part[num].tiesetList);
+			System.out.println("コントローラ毎のグラフ"+topologyInfo.get(num).graph);
 			//System.out.println("pre"+topologyInfo.get(num).tiesetList.get(0).nodeList.get(1).TiesetID);
 			//maketieset_part[num]の中でタイセットが保存されている
 			addTiesetIDtoNode_part(num);
 			MakeTiesetGraph_part(num);
-			System.out.println(topologyInfo.get(num).TiesetGraph);
+			System.out.println("タイセットグラフ" + topologyInfo.get(num).TiesetGraph);
+			//Mainクラスへgraphとtiesetgraph情報を渡す
 		}
 	}
 
@@ -202,10 +203,10 @@ public class Topology {
 			int dst_node =Integer.parseInt(dst_Info[1]);
 			int src_node_tp =Integer.parseInt(src_Info[2]);
 			int dst_node_tp =Integer.parseInt(dst_Info[2]);
-			SearchNode(src_node).neighborNode.add(SearchNode(dst_node));
-			SearchNode(dst_node).neighborNode.add(SearchNode(src_node));
-			SearchNode(src_node).mapNextNode.put(SearchNode(dst_node), src_node_tp);
-			SearchNode(dst_node).mapNextNode.put(SearchNode(src_node), dst_node_tp);
+			SearchNode_part(src_node,num).neighborNode.add(SearchNode_part(dst_node,num));
+			SearchNode_part(dst_node,num).neighborNode.add(SearchNode_part(src_node,num));
+			SearchNode_part(src_node,num).mapNextNode.put(SearchNode_part(dst_node,num), src_node_tp);
+			SearchNode_part(dst_node,num).mapNextNode.put(SearchNode_part(src_node,num), dst_node_tp);
 			//ここで不必要なエッジを取り除くのもあり
 			topologyInfo.get(num).graph.addEdge(i, SearchNode_part(src_node,num),SearchNode_part(dst_node,num));
 		}
@@ -345,7 +346,7 @@ public class Topology {
 		for(int i = 0; i < topologyInfo.get(num).tiesetList.size(); i++){
 			for(Node node:topologyInfo.get(num).tiesetList.get(i).nodeList){
 				node.TiesetID.add(i);
-				System.out.println("test"+i);
+				//System.out.println("test"+i);
 			}
 		}
 	}
@@ -364,7 +365,7 @@ public class Topology {
 		TiesetGraph tiesetgraph = new TiesetGraph();
 		for (int i = 0; i < topologyInfo.get(num).node.length - 2; i++) {
 			tiesetgraph.MakeTiesetGraph(topologyInfo.get(num).node[i].TiesetID);
-			System.out.println(topologyInfo.get(num).node[i].TiesetID);
+			//System.out.println(topologyInfo.get(num).node[i].TiesetID);
 		}
 		topologyInfo.get(num).TiesetGraph = tiesetgraph.getTiesetGraph();
 	}
