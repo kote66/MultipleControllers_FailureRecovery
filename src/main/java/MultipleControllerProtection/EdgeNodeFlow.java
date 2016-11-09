@@ -15,12 +15,8 @@ import edu.uci.ics.jung.graph.Graph;
 public class EdgeNodeFlow extends MakeFlow{
 	MakeXML makexml = new MakeXML();
 	static int edge_group_id = 4001;
-	EdgeNodeFlow(List<Tieset> tiesetList, Graph<Node, Integer> globalGraph, Graph<Integer, TiesetEdge> tiesetGraph,Node[] globalNode, List<Integer> globalNode_ID) {
-		this.tiesetList = tiesetList;
-		this.globalGraph = globalGraph;
-		this.tiesetGraph = tiesetGraph;
+	EdgeNodeFlow(Node[] globalNode) {
 		this.globalNode = globalNode;
-		this.globalNode_ID = globalNode_ID;
 	}
 
 	

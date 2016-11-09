@@ -10,10 +10,8 @@ import edu.uci.ics.jung.graph.Graph;
 
 public class TiesetNodeFlow extends MakeFlow{
 	MakeXML makexml = new MakeXML();
-	TiesetNodeFlow(List<Tieset> tiesetList, Graph<Node, Integer> globalGraph, Graph<Integer, TiesetEdge> tiesetGraph) {
+	TiesetNodeFlow(List<Tieset> tiesetList) {
 		this.tiesetList = tiesetList;
-		this.globalGraph = globalGraph;
-		this.tiesetGraph = tiesetGraph;
 		Node.flow_counter = 0;
 	}
 	

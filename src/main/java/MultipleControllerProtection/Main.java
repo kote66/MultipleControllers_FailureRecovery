@@ -81,43 +81,42 @@ public class Main {
 		
 		//トポロジ情報からグラフの作成
 		Topology topology = new Topology(jsonlist);
-		topology.getTopologyInfo();
+		topology.exeTopology();
 		
 		//複数コントローラの場合ノードに所属コントローラのIPを保持させる
 		topology.setControllerIP(ControllerIP1, ControllerIP2);
-		//テスト用
-		//topology.test();
+		//showテスト
+		topology.showTest();
 		
 		//フローエントリの追加
 		//MakeFlow makeflow = new MakeFlow();
 		//フローエントリ設定時間の計測開始
 		long start = System.currentTimeMillis();
 		
-		//ここ以降にいれる引数を変えることで、タイセットの作り方を変えた障害復旧を切り替える
-		TiesetNodeFlow tiesetnodeflow = new TiesetNodeFlow(topology.tiesetList, topology.globalGraph, topology.TiesetGraph);
+		TiesetNodeFlow tiesetnodeflow = new TiesetNodeFlow(topology.tiesetList);
 		tiesetnodeflow.makeTiesetFlow();
 		
-		BorderNodeFlow bordernodeflow = new BorderNodeFlow(topology.tiesetList, topology.globalGraph, topology.TiesetGraph, topology.globalNode, topology.globalNode_ID);
+		BorderNodeFlow bordernodeflow = new BorderNodeFlow(topology.globalNode);
 		bordernodeflow.makeBorderFlow();
 		
-		EdgeNodeFlow edgenodeflow = new EdgeNodeFlow(topology.tiesetList, topology.globalGraph, topology.TiesetGraph, topology.globalNode, topology.globalNode_ID);
+		EdgeNodeFlow edgenodeflow = new EdgeNodeFlow(topology.globalNode);
 		edgenodeflow.makeEdgeFlow();
 		
-		CoreNodeFlow corenodeflow = new CoreNodeFlow(topology.tiesetList, topology.globalGraph, topology.TiesetGraph, topology.globalNode, topology.globalNode_ID);
+		CoreNodeFlow corenodeflow = new CoreNodeFlow(topology.globalNode);
 		corenodeflow.CoreNodeFlow();
 		
 		//コントローラ毎に作成したタイセットを用いてフローエントリを作成
 		for(int num = 0; num < jsonlist.size(); num++){
-			TiesetNodeFlow tiesetnodeflow_part = new TiesetNodeFlow(topology.topologyInfo.get(num).tiesetList, topology.topologyInfo.get(num).graph, topology.topologyInfo.get(num).TiesetGraph);
+			TiesetNodeFlow tiesetnodeflow_part = new TiesetNodeFlow(topology.local_topology.get(num).tiesetList);
 			tiesetnodeflow_part.makeTiesetFlow();
 			
-			BorderNodeFlow bordernodeflow_part = new BorderNodeFlow(topology.topologyInfo.get(num).tiesetList, topology.topologyInfo.get(num).graph, topology.topologyInfo.get(num).TiesetGraph, topology.topologyInfo.get(num).node, topology.topologyInfo.get(num).node_id_int);
+			BorderNodeFlow bordernodeflow_part = new BorderNodeFlow(topology.local_topology.get(num).node);
 			bordernodeflow_part.makeBorderFlow();
 			
-			EdgeNodeFlow edgenodeflow_part = new EdgeNodeFlow(topology.topologyInfo.get(num).tiesetList, topology.topologyInfo.get(num).graph, topology.topologyInfo.get(num).TiesetGraph, topology.topologyInfo.get(num).node, topology.topologyInfo.get(num).node_id_int);
+			EdgeNodeFlow edgenodeflow_part = new EdgeNodeFlow(topology.local_topology.get(num).node);
 			edgenodeflow_part.makeEdgeFlow();
 			
-			CoreNodeFlow corenodeflow_part = new CoreNodeFlow(topology.topologyInfo.get(num).tiesetList, topology.topologyInfo.get(num).graph, topology.topologyInfo.get(num).TiesetGraph, topology.topologyInfo.get(num).node, topology.topologyInfo.get(num).node_id_int);
+			CoreNodeFlow corenodeflow_part = new CoreNodeFlow(topology.local_topology.get(num).node);
 			corenodeflow_part.CoreNodeFlow();
 		}
 		

@@ -58,12 +58,8 @@ public class MakeTieset {
 	    while(!queue.isEmpty()){
 	    		//キューから取り除き、Treeに追加
 	    		Node start_node =queue.remove();
-	    		
-	    		//System.out.println("キューに追加");
-	    		//System.out.println(start_node);
+
 	        TreeGraph.addVertex(start_node);
-	        //隣接ノードが存在しない
-	        //System.out.println("隣接ノード"+start_node.neighborNode);
 	        //対象ノードの子をキューへ追加
 	        	for(Node node:start_node.neighborNode){
 	    	        //TreeGraphにneighborNodeが含まれていなければキューに追加
@@ -83,11 +79,6 @@ public class MakeTieset {
 			//System.out.println(globalGraph.getEndpoints(i));
 			for(int j = 0; j < TreeGraph.getEdgeCount(); j++){
 				Pair<Node> test2= TreeGraph.getEndpoints(j);
-				//TreeGraphが表示されない(存在しないかも)
-				//System.out.println(TreeGraph.getEndpoints(j));
-				//Pairは存在しない
-				//System.out.println(test);
-				//System.out.println(test2);
 				if(test.getFirst().node_id == test2.getFirst().node_id && test.getSecond().node_id == test2.getSecond().node_id){
 					
 					break;

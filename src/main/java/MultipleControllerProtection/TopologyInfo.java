@@ -15,8 +15,7 @@ public class TopologyInfo {
 	List<Tieset> tiesetList = new ArrayList<Tieset>();
 	Graph<Node, Integer> graph = new UndirectedSparseGraph<Node, Integer>();
 	Graph<Integer, TiesetEdge> TiesetGraph = new UndirectedSparseGraph<Integer, TiesetEdge>();
-	//Graph<String, Integer> graph = new UndirectedSparseGraph<String, Integer>();
-	// Map<MacAddress, IPaddress>
+
 	
 	JsonNode rootNode;
 	List<Integer> node_id_int = new ArrayList<Integer>();
@@ -29,7 +28,7 @@ public class TopologyInfo {
 	List<String> source_tp = new ArrayList<String>();
 	String host = "host";
 	
-	
+	//searchNodeを統一する
 	public Node SearchNode(int IntNodeId) {
 		for (Node nodenum : node) {
 			if (nodenum.node_id == IntNodeId) {

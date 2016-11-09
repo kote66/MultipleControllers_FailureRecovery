@@ -11,12 +11,8 @@ import edu.uci.ics.jung.graph.Graph;
 
 public class BorderNodeFlow extends MakeFlow{
 	MakeXML makexml = new MakeXML();
-	BorderNodeFlow(List<Tieset> tiesetList, Graph<Node, Integer> globalGraph, Graph<Integer, TiesetEdge> tiesetGraph,Node[] globalNode, List<Integer> globalNode_ID) {
-		this.tiesetList = tiesetList;
-		this.globalGraph = globalGraph;
-		this.tiesetGraph = tiesetGraph;
+	BorderNodeFlow(Node[] globalNode) {
 		this.globalNode = globalNode;
-		this.globalNode_ID = globalNode_ID;
 	}
 
 	//BorderNodeにフロー追加

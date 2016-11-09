@@ -31,13 +31,13 @@ import org.w3c.dom.*;
 public class MakeXML {
 	
 	String PostUri(String IP){
-		String PostUri;
-		return PostUri = "http://"+IP+":8181/restconf/operations/sal-flow:add-flow";
+		String PostUri = "http://"+IP+":8181/restconf/operations/sal-flow:add-flow";
+		return PostUri;
 	}
 	
 	String PostGroupUri(String IP){
-		String PostGroupUri;
-		return PostGroupUri = "http://"+IP+":8181/restconf/operations/sal-group:add-group";
+		String PostGroupUri = "http://"+IP+":8181/restconf/operations/sal-group:add-group";
+		return PostGroupUri;
 	}
 	
 	RestRequest rest_request = new RestRequest();
@@ -83,11 +83,11 @@ public class MakeXML {
 		int bucket_id0 = 0;
 		int bucket_id1 = 1;
 		int group_id_second = decisionGroup_id(group_id);
-		
 		int F_watch_port = watch_port.get(0);
 		int S_watch_port = watch_port.get(1);
 		make_bucket(bucket, order0, order1, group_id, F_watch_port);
 		output_action(bucket, F_watch_port, bucket_id0, order2);
+		
 		//迂回経路のbucket
 		Element backup_bucket = make_bucket(buckets);
 		make_bucket(backup_bucket, order0, order1, group_id_second, S_watch_port);
@@ -113,7 +113,6 @@ public class MakeXML {
 		
 		//vlan_match(match, group_id);
 		make_instructions(product, group_id);
-		
 		
 		Document document = new Document(product);
 		XMLOutputter xout = new XMLOutputter(XMLOUTPUT);
