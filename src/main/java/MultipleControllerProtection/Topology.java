@@ -3,6 +3,7 @@ package MultipleControllerProtection;
 import java.io.IOException;
 
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -73,16 +74,13 @@ public class Topology {
 		//タイセットグラフの作成
 		MakeTiesetGraph();
 		
-		//その他
-		booleanBorder();
-		set_controller_id();
-		findBorderEdgeNode(globalNode);
+
 
 		//コントローラ毎にタイセットを作成
+		
 		MakeTieset[] maketieset_part = new MakeTieset[local_topology.size()];
 		//重複したリンクの除去
 		removeEdgeRepetition_part();
-		
 		for(int num = 0; num < local_topology.size(); num++){
 			//不必要な情報を除去（JSON情報に不必要な情報が混ざるため）
 			removeRepetition_local(num);
@@ -94,8 +92,11 @@ public class Topology {
 			local_topology.get(num).tiesetList =maketieset_part[num].tiesetList;
 			addTiesetIDtoNode_part(num);
 			MakeTiesetGraph_part(num);
-			//Mainクラスへgraphとtiesetgraph情報を渡す
 		}
+		
+		//全体グラフとローカルグラフにコントローラIDを設定
+		set_controller_id();
+		setNextControllerID(globalNode);
 	}
 
 
@@ -113,7 +114,6 @@ public class Topology {
 		local_topology.get(controller_id).source_tp = rootNode.findValuesAsText("source-tp");
 
 		//全体のトポロジ情報の作成
-		//リファクタリング：関数化
 		for(String dst_tp:rootNode.findValuesAsText("dest-tp")){
 			global_dst_tp.add(dst_tp);
 		}
@@ -122,7 +122,6 @@ public class Topology {
 		}
 
 		//コントローラ毎のトポロジ情報の作成
-		//local_topology側で処理
 		for(String dst_tp:rootNode.findValuesAsText("dest-tp")){
 			local_topology.get(controller_id).dst_tp.add(dst_tp);
 		}
@@ -130,10 +129,11 @@ public class Topology {
 			local_topology.get(controller_id).source_tp.add(src_tp);
 		}
 
-		//macとIPの紐付け
-		//local_topology側で処理
+		//MACアドレスとIPアドレスの紐付け
 		for(int i=0; i < local_topology.get(controller_id).host_mac.size();i++){
-			ChangeMac_toIP.put("host:" + local_topology.get(controller_id).host_mac.get(i), local_topology.get(controller_id).host_ip.get(i));
+			String host_mac = local_topology.get(controller_id).host_mac.get(i);
+			String host_ip = local_topology.get(controller_id).host_ip.get(i);
+			ChangeMac_toIP.put("host:" + host_mac, host_ip );
 		}
 	}
 
@@ -271,11 +271,12 @@ public class Topology {
 			String IP = hostInfoList.get(++i);
 			int node_tp = Integer.parseInt(hostInfoList.get(++i));
 			SearchNode(node).Hostmap.put(IP, node_tp);
-			SearchNode(node).host_node_map.put(IP, SearchNode(node));
+			Node.host_node_map.put(IP, SearchNode(node));
 			//Edgenode判定
 			SearchNode(node).Edgenode = true;
+			SearchNode(node);
 			//ホストIPをリストで保持
-			SearchNode(node).IPSet.add(IP);
+			Node.IPSet.add(IP);
 		}
 	}
 
@@ -369,32 +370,51 @@ public class Topology {
 		local_topology.get(num).TiesetGraph = tiesetgraph.getTiesetGraph();
 	}
 
-	private void booleanBorder(){
-		for(Node node: globalNode){
-			node.ifBorderNode();
-		}
-	}
-
 	private void set_controller_id(){
 		for(int controller_id = 0; controller_id < local_topology.size(); controller_id++){
 			for(String node_id :local_topology.get(controller_id).node_id){
 				//System.out.println("test"+node_id + "controller_id"+controller_id);
 				if(node_id.startsWith("host")){
-					String IP =ChangeMac_toIP.get(node_id);
-					SearchNode(1).host_controller_map.put(IP, controller_id + 1);
-					//System.out.println(SearchNode(1).host_controller_map);
+					
 				}
 				else{
 					String node_id_str = RemoveOpenFlow(node_id);
 					int node_id_int = Integer.valueOf(node_id_str);
 					SearchNode(node_id_int).controller_id = controller_id + 1;
-					SearchNode(node_id_int).controller_id_set.add(controller_id + 1);
+					Node.controller_id_set.add(controller_id + 1);
+					
+					//ローカルコントローラへの設定
+					SearchNode_part(node_id_int,controller_id).controller_id = controller_id + 1;
 					//System.out.println("重複有無テスト"+node_id_int+"controller_id"+SearchNode(node_id_int).controller_id);
 					//System.out.println(SearchNode(node_id_int).controller_id);
 				}
 			}
 		}
 	}
+	/*
+	private void local_set_controller_id(){
+		for(int controller_id = 0; controller_id < local_topology.size(); controller_id++){
+			for(String node_id :local_topology.get(controller_id).node_id){
+				//System.out.println("test"+node_id + "controller_id"+controller_id);
+				if(node_id.startsWith("host")){
+					
+				}
+				else{
+					String node_id_str = RemoveOpenFlow(node_id);
+					int node_id_int = Integer.valueOf(node_id_str);
+					SearchNode(node_id_int).controller_id = controller_id + 1;
+					Node.controller_id_set.add(controller_id + 1);
+					
+					//ローカルコントローラへの設定
+					//SearchNode_part(node_id_int,controller_id).controller_id = controller_id + 1;
+					//SearchNode_part(node_id_int,controller_id).controller_id_set.add(controller_id + 1);
+					//System.out.println("重複有無テスト"+node_id_int+"controller_id"+SearchNode(node_id_int).controller_id);
+					//System.out.println(SearchNode(node_id_int).controller_id);
+				}
+			}
+		}
+	}
+	*/
 
 	//リファクタリング：コントローラが3つ以上あっても対応可能にする
 	public void setControllerIP(String ControllerIP1, String ControllerIP2){
@@ -417,14 +437,14 @@ public class Topology {
 	}
 
 
-	private void findBorderEdgeNode(Node[] nodeList){
+	private void setNextControllerID(Node[] nodeList){
 		for(Node node : nodeList){
 			//次ノードが対象ノードのcontroller_id以外である場合
 			for(Node next_node : node.mapNextNode.keySet()){
 				if(!(node.controller_id == next_node.controller_id)){
 					node.CoreNode = true;
 					//次ノードのcontroller_idを取得
-					node.next_node_controller_id.put(next_node, next_node.controller_id);
+					Node.next_node_controller_id.put(next_node, next_node.controller_id);
 				}
 			}
 		}

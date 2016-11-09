@@ -18,7 +18,6 @@ public class EdgeNodeFlow extends MakeFlow{
 	EdgeNodeFlow(Node[] globalNode) {
 		this.globalNode = globalNode;
 	}
-
 	
 	//EdgeNodeにフロー追加（ホストから出力）
 	public void makeEdgeFlow() throws ParserConfigurationException{

@@ -39,7 +39,7 @@ public class Node {
 	Map<String, List<Integer>> TiesetIDtoIP = new HashMap<String, List<Integer>>();
 
 	//次ノードをキー、次ノードのcontroller_idを値とするMap<NextNode, controller_id>
-	Map<Node, Integer> next_node_controller_id = new HashMap<Node, Integer>();
+	static Map<Node, Integer> next_node_controller_id = new HashMap<Node, Integer>();
 	
 	// 境界ノードの場合：Map<キー:Dst_ip,値:TiesetID(vlanID), >
 	

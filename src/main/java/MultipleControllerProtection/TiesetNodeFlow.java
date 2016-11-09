@@ -2,11 +2,8 @@ package MultipleControllerProtection;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.text.Document;
 import javax.xml.parsers.ParserConfigurationException;
 
-import edu.uci.ics.jung.graph.Graph;
 
 public class TiesetNodeFlow extends MakeFlow{
 	MakeXML makexml = new MakeXML();

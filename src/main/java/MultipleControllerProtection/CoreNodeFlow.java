@@ -2,10 +2,7 @@ package MultipleControllerProtection;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.xml.parsers.ParserConfigurationException;
-
-import edu.uci.ics.jung.graph.Graph;
 
 public class CoreNodeFlow  extends MakeFlow{
 
@@ -14,13 +11,13 @@ public class CoreNodeFlow  extends MakeFlow{
 	}
 
 	//BorderNodeにフロー追加
-	public void CoreNodeFlow() throws ParserConfigurationException{
+	public void CoreNodeFlow() throws ParserConfigurationException {
 		List<Node> coreNodeList = new ArrayList<Node>();
 		coreNodeList = makeCoreNodeList();
 
 		for(Node node : coreNodeList){
 			int group_id = 501;
-			for(int controller_id : node.controller_id_set){
+			for(int controller_id : Node.controller_id_set){
 				if(node.controller_id == controller_id){
 					//コアノードのcontroller_idと宛先controller_idが一致したらflowの設定はしない
 					continue;
@@ -75,11 +72,5 @@ public class CoreNodeFlow  extends MakeFlow{
 			}
 		}
 		return coreNodeList;
-	}
-	
-	public int get_flow_counter(){
-		int flow_counter = globalNode[0].flow_counter;
-		
-		return flow_counter;
 	}
 }

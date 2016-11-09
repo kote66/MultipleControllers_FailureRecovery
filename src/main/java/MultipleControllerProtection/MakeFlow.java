@@ -131,4 +131,9 @@ public class MakeFlow {
 		}
 		return null;
 	}
+	public int get_flow_counter(){
+		int flow_counter = Node.flow_counter;
+		
+		return flow_counter;
+	}
 }

@@ -1,13 +1,7 @@
 package MultipleControllerProtection;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.text.Document;
 import javax.xml.parsers.ParserConfigurationException;
-
-import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
-import edu.uci.ics.jung.graph.Graph;
 
 public class BorderNodeFlow extends MakeFlow{
 	MakeXML makexml = new MakeXML();
@@ -22,15 +16,15 @@ public class BorderNodeFlow extends MakeFlow{
 
 		for(Node node : borderList){
 			int group_id = 1001;
-			for(String IP : node.IPSet){
+			for(String IP : Node.IPSet){
 				//対象ノードど宛先ノードが一致した場合continueする
-				if(node.node_id == node.host_node_map.get(IP).node_id){
+				if(node.node_id == Node.host_node_map.get(IP).node_id){
 					continue;
 				}
 				//nodeと宛先ノードのcontroller_idが一致（ローカルコントローラ内）
-				if(node.host_node_map.get(IP).controller_id == node.controller_id){
+				if(Node.host_node_map.get(IP).controller_id == node.controller_id){
 					//次タイセットの取得
-					List<Node> local_shortest_node = findShortestPath(node, node.host_node_map.get(IP));
+					List<Node> local_shortest_node = findShortestPath(node, Node.host_node_map.get(IP));
 					int local_tieset_id= findNextTieset(local_shortest_node);
 
 					//逆方向のタイセットID取得
@@ -69,9 +63,9 @@ public class BorderNodeFlow extends MakeFlow{
 					group_id++;
 				}
 				//宛先ホストがローカルコントローラ外の場合
-				if(!(node.host_node_map.get(IP).controller_id == node.controller_id)){
+				if(!(Node.host_node_map.get(IP).controller_id == node.controller_id)){
 					List<Node> borderEdgeList = new ArrayList<Node>();
-					borderEdgeList = findBorderEdgeNode(node.controller_id, node.host_node_map.get(IP).controller_id);
+					borderEdgeList = findBorderEdgeNode(node.controller_id, Node.host_node_map.get(IP).controller_id);
 
 					//対象ノードが中継ノードなら判定しない
 					if(!(borderEdgeList.contains(node))){
@@ -106,7 +100,7 @@ public class BorderNodeFlow extends MakeFlow{
 
 						//フローエントリの作成
 						int priority = 200;
-						String mpls = String.valueOf(node.host_node_map.get(IP).controller_id);
+						String mpls = String.valueOf(Node.host_node_map.get(IP).controller_id);
 						makexml.BorderNodeFlow(node, mpls, group_id, priority);
 						group_id++;
 
@@ -129,7 +123,7 @@ public class BorderNodeFlow extends MakeFlow{
 
 		for(Node node : borderEdgeList){
 			if(node.controller_id == local_controller_id){
-				if(node.next_node_controller_id.values().contains(dst_controller_id)){
+				if(Node.next_node_controller_id.values().contains(dst_controller_id)){
 					targetBorderEdgeList.add(node);
 				}
 

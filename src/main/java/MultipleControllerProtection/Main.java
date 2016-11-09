@@ -1,51 +1,11 @@
 package MultipleControllerProtection;
-import java.io.IOException;
 
-
-import org.jdom2.Attribute;
-import org.jdom2.Document;
-import org.jdom2.Element;
-import org.jdom2.JDOMException;
-import org.jdom2.Namespace;
-import org.jdom2.output.DOMOutputter;
-import org.jdom2.output.Format;
-import org.jdom2.output.XMLOutputter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import org.w3c.dom.DOMImplementation;
-
-import com.fasterxml.jackson.databind.annotation.JsonAppend.Attr;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
-
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import org.w3c.dom.DOMImplementation;
 
 public class Main {
 	public static void main( String[] args ) throws Exception{
 		List<String> jsonlist = new ArrayList<String>();
-		int flow_entry_counter = 0;
 		
 		//各コントローラのIPアドレス
 		String ControllerIP1="192.168.56.1";
@@ -88,11 +48,10 @@ public class Main {
 		//showテスト
 		topology.showTest();
 		
-		//フローエントリの追加
-		//MakeFlow makeflow = new MakeFlow();
 		//フローエントリ設定時間の計測開始
 		long start = System.currentTimeMillis();
 		
+		//全体グラフからフローエントリを作成
 		TiesetNodeFlow tiesetnodeflow = new TiesetNodeFlow(topology.tiesetList);
 		tiesetnodeflow.makeTiesetFlow();
 		
@@ -105,6 +64,8 @@ public class Main {
 		CoreNodeFlow corenodeflow = new CoreNodeFlow(topology.globalNode);
 		corenodeflow.CoreNodeFlow();
 		
+		
+		/*
 		//コントローラ毎に作成したタイセットを用いてフローエントリを作成
 		for(int num = 0; num < jsonlist.size(); num++){
 			TiesetNodeFlow tiesetnodeflow_part = new TiesetNodeFlow(topology.local_topology.get(num).tiesetList);
@@ -119,14 +80,15 @@ public class Main {
 			CoreNodeFlow corenodeflow_part = new CoreNodeFlow(topology.local_topology.get(num).node);
 			corenodeflow_part.CoreNodeFlow();
 		}
-		
+		*/
 		
 		//フローエントリ設定時間の計測終了
 		long end = System.currentTimeMillis();
 		long interval = end - start;
 		System.out.println(interval + "ミリ秒");
 		
-		int flow_counter = corenodeflow.get_flow_counter();
+		MakeFlow makeflow = new MakeFlow();
+		int flow_counter = makeflow.get_flow_counter();
 		System.out.println(flow_counter);
 		System.out.println("完了！");
 	}
