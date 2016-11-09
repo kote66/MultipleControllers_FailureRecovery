@@ -64,7 +64,6 @@ public class Main {
 		CoreNodeFlow corenodeflow = new CoreNodeFlow(topology.globalNode);
 		corenodeflow.CoreNodeFlow();
 		
-		
 		/*
 		//コントローラ毎に作成したタイセットを用いてフローエントリを作成
 		for(int num = 0; num < jsonlist.size(); num++){

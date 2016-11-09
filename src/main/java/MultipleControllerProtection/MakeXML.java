@@ -27,8 +27,9 @@ import org.jdom2.output.support.FormatStack;
 import org.jdom2.output.support.XMLOutputProcessor;
 import org.w3c.dom.*;
 
-
 public class MakeXML {
+	
+	RestRequest rest_request = new RestRequest();	
 	
 	String PostUri(String IP){
 		String PostUri = "http://"+IP+":8181/restconf/operations/sal-flow:add-flow";
@@ -40,9 +41,8 @@ public class MakeXML {
 		return PostGroupUri;
 	}
 	
-	RestRequest rest_request = new RestRequest();
 	Namespace ns;
-	//xmlヘッダーの部分の書き換え
+	//xmlヘッダーの部分をODL仕様に書き換え
 	public static final AbstractXMLOutputProcessor XMLOUTPUT = new AbstractXMLOutputProcessor() {
 		@Override
 		protected void printDeclaration(final Writer out, final FormatStack fstack) throws IOException {
@@ -50,9 +50,7 @@ public class MakeXML {
 			write(out, fstack.getLineSeparator());
 		}
 	};
-
-
-
+	
 	// タイセットノード
 	public void tiesetflow(Node node, int tieset_id, int group_id, int priority) throws ParserConfigurationException {
 		Element product = make_flow_xml(node, priority);
@@ -62,14 +60,11 @@ public class MakeXML {
 
 		Document document = new Document(product);
 		XMLOutputter xout = new XMLOutputter(XMLOUTPUT);
-		//System.out.println(xout.outputString(document));
-		String test = xout.outputString(document);
-		//flow_add
-		String IP ;
-		rest_request.PostXML(PostUri(node.belong_to_IP), xout.outputString(document));
-		node.flow_counter++;
-	}
 
+		//フローエントリの追加
+		rest_request.PostXML(PostUri(node.belong_to_IP), xout.outputString(document));
+		Node.flow_counter++;
+	}
 
 	public void tiesetgroup(Node node, int group_id, List<Integer> watch_port) throws ParserConfigurationException{
 		Element product = make_group_xml(group_id, node.node_id);
@@ -95,39 +90,34 @@ public class MakeXML {
 		
 		Document document = new Document(product);	
 		XMLOutputter xout = new XMLOutputter(XMLOUTPUT);
-		System.out.println(xout.outputString(document));
+		//System.out.println(xout.outputString(document));
 		
-		//flow_group_add
+		//グループエントリの追加
 		rest_request.PostXML(PostGroupUri(node.belong_to_IP), xout.outputString(document));
 		node.flow_counter++;
 	}
 	
-	// 境界ノード（コントローラ内）
-	public String localBorderNodeFlow(Node node, String DstIP, int group_id, int priority) throws ParserConfigurationException {
-		//宛先がローカルコントローラ内
+	//タイセット境界ノード（宛先がコントローラ内）
+	public void localBorderNodeFlow(Node node, String DstIP, int group_id, int priority) throws ParserConfigurationException {
+		
 		Element product = make_flow_xml(node, priority);
 		Element match = make_match(product);
-		//DstIPをmatchにする
 		make_ethertype_match(match, "2048");
 		make_ip_match(match, DstIP+"/32");
-		
-		//vlan_match(match, group_id);
 		make_instructions(product, group_id);
 		
 		Document document = new Document(product);
 		XMLOutputter xout = new XMLOutputter(XMLOUTPUT);
 		//System.out.println(xout.outputString(document));
 		
-		//flow_add
+		//フローエントリの追加
 		rest_request.PostXML(PostUri(node.belong_to_IP), xout.outputString(document));
 		node.flow_counter++;
-		return null;
 	}
 
-	// 境界ノード（コントローラ外）
-	public String BorderNodeFlow(Node node, String mpls, int group_id, int priority) throws ParserConfigurationException {
-		//宛先がローカルコントローラ内
-		//mplsをmatchにする
+	//タイセット境界ノード（宛先がコントローラ外）
+	public void BorderNodeFlow(Node node, String mpls, int group_id, int priority) throws ParserConfigurationException {
+
 		Element product = make_flow_xml(node, priority);
 		Element match = make_match(product);
 		make_ethertype_match(match, "34887");
@@ -138,27 +128,23 @@ public class MakeXML {
 		XMLOutputter xout = new XMLOutputter(XMLOUTPUT);
 		//System.out.println(xout.outputString(document));
 		
-		//flow_add
+		//フローエントリの追加
 		rest_request.PostXML(PostUri(node.belong_to_IP), xout.outputString(document));
 		node.flow_counter++;
-		return null;
 	}
 	
 	//ループ障害への対応
-	public String BorderNodeFlow_loop(Node node, String DstIP, int in_port_int, int group_id, int priority) throws ParserConfigurationException {
-		//宛先がローカルコントローラ内
+	public void BorderNodeFlow_loop(Node node, String DstIP, int in_port_int, int group_id, int priority) throws ParserConfigurationException {
+
 		Element product = make_flow_xml(node, priority);
 		Element match = make_match(product);
-		//DstIPをmatchにする
+
 		make_ethertype_match(match, "2048");
 		make_ip_match(match, DstIP+"/32");
 		Element in_port = new Element("in-port",ns);
 		String in_port_str = String.valueOf(in_port_int);
 		match.addContent(in_port);
 		in_port.addContent(in_port_str);
-		
-		
-		//vlan_match(match, group_id);
 		make_instructions(product, group_id);
 		
 		
@@ -166,28 +152,25 @@ public class MakeXML {
 		XMLOutputter xout = new XMLOutputter(XMLOUTPUT);
 		//System.out.println(xout.outputString(document));
 		
-		//flow_add
+		//フローエントリの追加
 		rest_request.PostXML(PostUri(node.belong_to_IP), xout.outputString(document));
 		node.flow_counter++;
-		return null;
 	}
 	
-	public String BorderNodeGroup(Node node, int group_id, int F_watch_port, int S_watch_port, int F_tieset_id, int S_tieset_id) throws ParserConfigurationException{
+	public void BorderNodeGroup(Node node, int group_id, int F_watch_port, int S_watch_port, int F_tieset_id, int S_tieset_id) throws ParserConfigurationException{
 		Element product = make_group_xml(group_id, node.node_id);
-		//outline_group(product, group_id, node.node_id);
 		Element buckets = make_buckets(product);
+		
 		//現用経路のbucket
 		Element bucket = make_bucket(buckets);
-		//vlanの書き換えと出力ポートの指定
 		int order0 = 0;
 		int order1 = 1;
 		int order2 = 2;
 		int bucket_id0 = 0;
 		int bucket_id1 = 1;
-		//int group_id_second = decisionGroup_id(group_id);
-		
 		make_bucket(bucket, order0, order1, F_tieset_id, F_watch_port);
 		output_action(bucket, F_watch_port, bucket_id0, order2);
+		
 		//迂回経路のbucket
 		Element backup_bucket = make_bucket(buckets);
 		make_bucket(backup_bucket, order0, order1, S_tieset_id, S_watch_port);
@@ -196,16 +179,15 @@ public class MakeXML {
 		Document document = new Document(product);	
 		XMLOutputter xout = new XMLOutputter(XMLOUTPUT);
 		//System.out.println(xout.outputString(document));
-		//flow_group_add
+		
+		//グルーエントリの追加
 		rest_request.PostXML(PostGroupUri(node.belong_to_IP), xout.outputString(document));
 		node.flow_counter++;
-		return xout.outputString(document);
 	}
 	
-	//宛先がコントローラ外
-	public String EdgeNodeflowPushVlan(Node node, String IP, int group_id, int priority, int in_port_int) throws ParserConfigurationException {
-		//宛先がローカルコントローラ内
-		//mplsをmatchにする
+	//エッジノード（宛先がコントローラ外）
+	public void EdgeNodeflowPushVlan(Node node, String IP, int group_id, int priority, int in_port_int) throws ParserConfigurationException {
+
 		Element product = make_flow_xml(node, priority);
 		Element match = make_match(product);
 		Element in_port = new Element("in-port",ns);
@@ -220,28 +202,26 @@ public class MakeXML {
 		XMLOutputter xout = new XMLOutputter(XMLOUTPUT);
 		//System.out.println(xout.outputString(document));
 		
-		//flow_add
+		//フローエントリの追加
 		rest_request.PostXML(PostUri(node.belong_to_IP), xout.outputString(document));
 		node.flow_counter++;
-		return null;
 	}
 	
-	public String EdgeNodeGroupPushVlan(Node node, int group_id, int F_watch_port, int S_watch_port, int F_tieset_id, int S_tieset_id, int dst_controller) throws ParserConfigurationException{
+	public void EdgeNodeGroupPushVlan(Node node, int group_id, int F_watch_port, int S_watch_port, int F_tieset_id, int S_tieset_id, int dst_controller) throws ParserConfigurationException{
 		Element product = make_group_xml(group_id, node.node_id);
 		//outline_group(product, group_id, node.node_id);
 		Element buckets = make_buckets(product);
+		
 		//現用経路のbucket
 		Element bucket = make_bucket(buckets);
-		//vlanの書き換えと出力ポートの指定
 		int order0 = 0;
 		int order1 = 1;
 		int order4 = 4;
 		int bucket_id0 = 0;
 		int bucket_id1 = 1;
-		//int group_id_second = decisionGroup_id(group_id);
-		
 		make_bucket(bucket, order0, order1, F_tieset_id, F_watch_port, dst_controller);
 		output_action(bucket, F_watch_port, bucket_id0, order4);
+		
 		//迂回経路のbucket
 		Element backup_bucket = make_bucket(buckets);
 		make_bucket(backup_bucket, order0, order1, S_tieset_id, S_watch_port, dst_controller);
@@ -250,28 +230,25 @@ public class MakeXML {
 		Document document = new Document(product);	
 		XMLOutputter xout = new XMLOutputter(XMLOUTPUT);
 		//System.out.println(xout.outputString(document));
-		//flow_group_add
+		//グループエントリの追加
 		rest_request.PostXML(PostGroupUri(node.belong_to_IP), xout.outputString(document));
 		node.flow_counter++;
-		return xout.outputString(document);
 	}
 
-	public String local_EdgeNodeGroupPushVlan(Node node, int group_id, int F_watch_port, int S_watch_port, int F_tieset_id, int S_tieset_id) throws ParserConfigurationException{
+	public void local_EdgeNodeGroupPushVlan(Node node, int group_id, int F_watch_port, int S_watch_port, int F_tieset_id, int S_tieset_id) throws ParserConfigurationException{
 		Element product = make_group_xml(group_id, node.node_id);
-		//outline_group(product, group_id, node.node_id);
 		Element buckets = make_buckets(product);
+		
 		//現用経路のbucket
 		Element bucket = make_bucket(buckets);
-		//vlanの書き換えと出力ポートの指定
 		int order0 = 0;
 		int order1 = 1;
 		int order2 = 2;
 		int bucket_id0 = 0;
 		int bucket_id1 = 1;
-		//int group_id_second = decisionGroup_id(group_id);
-		
 		make_bucket(bucket, order0, order1, F_tieset_id, F_watch_port);
 		output_action(bucket, F_watch_port, bucket_id0, order2);
+		
 		//迂回経路のbucket
 		Element backup_bucket = make_bucket(buckets);
 		make_bucket(backup_bucket, order0, order1, S_tieset_id, S_watch_port);
@@ -280,10 +257,10 @@ public class MakeXML {
 		Document document = new Document(product);	
 		XMLOutputter xout = new XMLOutputter(XMLOUTPUT);
 		//System.out.println(xout.outputString(document));
-		//flow_group_add
+		
+		//グループエントリの追加
 		rest_request.PostXML(PostGroupUri(node.belong_to_IP), xout.outputString(document));
 		node.flow_counter++;
-		return xout.outputString(document);
 	}
 
 	
