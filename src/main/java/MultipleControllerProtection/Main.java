@@ -7,6 +7,7 @@ public class Main {
 	public static void main( String[] args ) throws Exception{
 		List<String> jsonlist = new ArrayList<String>();
 		
+		
 		//各コントローラのIPアドレス
 		String ControllerIP1="192.168.56.1";
 		String ControllerIP2="192.168.56.101";

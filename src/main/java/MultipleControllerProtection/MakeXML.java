@@ -236,6 +236,7 @@ public class MakeXML {
 	}
 
 	public void local_EdgeNodeGroupPushVlan(Node node, int group_id, int F_watch_port, int S_watch_port, int F_tieset_id, int S_tieset_id) throws ParserConfigurationException{
+		
 		Element product = make_group_xml(group_id, node.node_id);
 		Element buckets = make_buckets(product);
 		
@@ -266,10 +267,10 @@ public class MakeXML {
 	
 	//ホストへ転送
 	//Flow
-	public String EdgeNodeFlowHost(Node node, String DstIP, int output_port, int priority, int group_id) throws ParserConfigurationException {
+	public void EdgeNodeFlowHost(Node node, String DstIP, int output_port, int priority, int group_id) throws ParserConfigurationException {
+		
 		Element product = make_flow_xml(node, priority);
 		Element match = make_match(product);
-		//DstIPをmatchにする
 		make_ethertype_match(match, "2048");
 		make_ip_match(match, DstIP+"/32");
 		make_instructions(product, group_id);
@@ -278,38 +279,30 @@ public class MakeXML {
 		XMLOutputter xout = new XMLOutputter(XMLOUTPUT);
 		//System.out.println(xout.outputString(document));
 		
-		//flow_add
+		//フローエントリの追加
 		rest_request.PostXML(PostUri(node.belong_to_IP), xout.outputString(document));
 		node.flow_counter++;
-		//group_add
-		
-		return null;
 	}
 	
 	//Group
-	public String EdgeNodeGroupHost(Node node, String DstIP, int output_port , int group_id) throws ParserConfigurationException{
+	public void EdgeNodeGroupHost(Node node, String DstIP, int output_port , int group_id) throws ParserConfigurationException{
 		Element product = make_group_xml(group_id, node.node_id);
-		//outline_group(product, group_id, node.node_id);
 		Element buckets = make_buckets(product);
 
 		Element bucket = make_bucket(buckets);
-		//vlanの書き換えと出力ポートの指定
-		//int group_id_second = decisionGroup_id(group_id);
 		make_pop_bucket(bucket, output_port);
-		//output_action(bucket, output_port, bucket_id0, order2);
-
+		
 		Document document = new Document(product);	
 		XMLOutputter xout = new XMLOutputter(XMLOUTPUT);
 		//System.out.println(xout.outputString(document));
-		//flow_group_add
+		//グループエントリの追加
 		rest_request.PostXML(PostGroupUri(node.belong_to_IP), xout.outputString(document));
 		node.flow_counter++;
-		return xout.outputString(document);
 	}
 
 	//コアノード
 	public void CoreNodeFlow(Node node, String mpls, int group_id, int priority) throws ParserConfigurationException{
-		//mplsをmatchにする
+
 				Element product = make_flow_xml(node, priority);
 				Element match = make_match(product);
 				make_ethertype_match(match, "34887");
@@ -320,34 +313,33 @@ public class MakeXML {
 				XMLOutputter xout = new XMLOutputter(XMLOUTPUT);
 				//System.out.println(xout.outputString(document));
 				
-				//flow_add
+				//フローエントリの追加
 				rest_request.PostXML(PostUri(node.belong_to_IP), xout.outputString(document));
 				node.flow_counter++;
-		
 	}
 	
 	
 	public void CoreNodeGroup(Node node, int group_id, int F_watch_port) throws ParserConfigurationException{
+		
 		Element product = make_group_xml(group_id, node.node_id);
-		//outline_group(product, group_id, node.node_id);
 		Element buckets = make_buckets(product);
+		
 		//現用経路のbucket
 		Element bucket = make_bucket(buckets);
 		int order0 = 0;
 		int order1 = 1;
 		int bucket_id0 = 0;
 		int bucket_id1 = 1;
-		//make_bucket(bucket, order0, order1, F_tieset_id, F_watch_port, dst_controller);
 		output_action(bucket, F_watch_port, bucket_id0, order0);
 
 		Document document = new Document(product);	
 		XMLOutputter xout = new XMLOutputter(XMLOUTPUT);
 		//System.out.println(xout.outputString(document));
-		//flow_group_add
+		
+		//グループエントリの作成
 		rest_request.PostXML(PostGroupUri(node.belong_to_IP), xout.outputString(document));
 		node.flow_counter++;
 	}
-	
 	
 	//XMLの作成（JDOM）
 	public Element make_flow_xml(Node node, int priority) throws ParserConfigurationException{
@@ -361,7 +353,7 @@ public class MakeXML {
 		return product;
 	}
 
-	//Flowの根幹
+	//Flowの基盤
 	private void outlineFlow(Element product, int node_id, int priority_num){
 		Element node = new Element("node",ns);
 		Namespace inv = Namespace.getNamespace("inv", "urn:opendaylight:inventory");
@@ -407,7 +399,6 @@ public class MakeXML {
 		vlan_id.addContent(vlan_id_present);
 		vlan_id.addContent(vlan_id_inter);
 		vlan_id_inter.addContent(vlan_id_str);
-		//vlan_id_inter.addContent(new Element("vlan-id",ns).setText(vlan_id_str));
 		make_ethertype_match(match, "2048");
 	}
 
@@ -482,48 +473,6 @@ public class MakeXML {
 		bucket.addContent(bucket_id);
 		bucket_id.addContent("0");
 	}
-	
-	private void make_edgenode_instructions(Element product, int output_port_int){
-		Element instructions = new Element("instructions",ns);
-		Element instruction = new Element("instruction",ns);
-		Element apply_actions = new Element("apply-actions",ns);
-		Element action_pop_vlan = new Element("action",ns);
-		Element action_pop_mpls = new Element("action",ns);
-		Element action_output_port = new Element("action",ns);
-		Element pop_vlan_action = new Element("pop-vlan-action",ns);
-		Element pop_mpls_action = new Element("pop-mpls-action",ns);
-		Element ethernet_type = new Element("ethernet-type",ns);
-		Element output_action = new Element("output-action",ns);
-		Element output_node_connector = new Element("output-node-connector",ns);
-		String output_port = String.valueOf(output_port_int);
-		
-		product.addContent(instructions);
-		instructions.addContent(instruction);
-		instruction.addContent(new Element("order",ns).setText("0"));
-		instruction.addContent(apply_actions);
-		
-		apply_actions.addContent(action_pop_vlan);
-		apply_actions.addContent(action_pop_mpls);
-		apply_actions.addContent(action_output_port);
-		
-		action_pop_mpls.addContent(pop_mpls_action);
-		pop_mpls_action.addContent(ethernet_type);
-		ethernet_type.addContent("2048");
-		action_output_port.addContent(output_action);
-		output_action.addContent(output_node_connector);
-		output_node_connector.addContent(output_port);
-		
-		action_pop_vlan.addContent(new Element("order",ns).setText("0"));
-		action_pop_vlan.addContent(pop_vlan_action);
-		action_pop_mpls.addContent(new Element("order",ns).setText("1"));
-		action_output_port.addContent(new Element("order",ns).setText("2"));
-	}
-
-	
-	//in_portをmatch条件にするXML
-
-	//IPアドレスをmatch条件にするXML
-
 
 	public Element make_group_xml(int group_id, int node_id) throws ParserConfigurationException{
 		//DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -567,11 +516,6 @@ public class MakeXML {
 		Element bucket = new Element("bucket",ns);
 		buckets.addContent(bucket);
 		return bucket;
-	}
-
-	private void make_action_group(Element bucket, String order){
-		Element action = new Element("action",ns);
-		action.addContent(order);
 	}
 
 	private void make_bucket(Element bucket, int order1_int, int order2_int, int tieset_id, int watch_port){
