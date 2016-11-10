@@ -2,4 +2,4 @@
 .classpath/
 # projectを除外
 .project/
-
+!.gitkeep
