@@ -1,11 +1,5 @@
-# 「.AppleDouble」フォルダを除外
-.AppleDouble/
+# classpathを除外
+.classpath/
+# projectを除外
+.project/
 
-# 「.DS_Store」や「._.DS_Store」を除外
-*.DS_Store
-
-# あらゆる階層の「cache」フォルダの中身だけを除外。
-# 「cache」フォルダ自体は無視しない。
-# 詳しくは下記のリンクを。
-**/cache/*
-!.gitkeep
