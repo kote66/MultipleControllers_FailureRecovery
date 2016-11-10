@@ -36,6 +36,7 @@ public class MakeXML {
 		return PostUri;
 	}
 	
+	
 	String PostGroupUri(String IP){
 		String PostGroupUri = "http://"+IP+":8181/restconf/operations/sal-group:add-group";
 		return PostGroupUri;
