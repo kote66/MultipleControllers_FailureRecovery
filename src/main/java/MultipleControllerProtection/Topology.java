@@ -52,6 +52,7 @@ public class Topology {
 		}
 	}
 
+	
 	public void exeTopology() {
 		//コントローラ毎のトポロジ情報を整理
 		for(int num = 0; num < local_topology.size(); num ++){
