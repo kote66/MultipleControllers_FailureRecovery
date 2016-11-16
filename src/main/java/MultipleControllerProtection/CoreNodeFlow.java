@@ -32,18 +32,24 @@ public class CoreNodeFlow  extends MakeFlow{
 					}
 				}
 				//未実装
-				/*
-				//迂回経路（ローカルコントローラ内で一番近いコアノードへの転送）
 				//アルゴリズム全てのローカルコアノードから最短距離のノードを選び、転送
-				List<Node> local_shortest_node = findShortestPath(node, neighbor_node);
-				//System.out.println(local_shortest_node);
-				int local_tieset_id= findNextTieset(local_shortest_node);
+				int local_shortext_node_size = -1;
+				List<Node> most_shortest_node = new ArrayList<Node>();
+				for(Node dst_node : coreNodeList){
+					List<Node> local_shortest_node = findShortestPath(node, dst_node);
+					if(local_shortext_node_size < local_shortest_node.size()){
+						most_shortest_node = local_shortest_node;
+						local_shortext_node_size = local_shortest_node.size();
+					}
+				}
+				System.out.println(most_shortest_node);
+				int local_tieset_id= findNextTieset(most_shortest_node);
 
 				Tieset local_target_tieset = findTieset(local_tieset_id);
 				//次タイセット
 				//出力ポートの決定
-				 * 
-				 */
+				
+				 
 				//MakeGroup
 				int F_watch_port = output_port;
 				//int S_watch_port = reverese_output_port;

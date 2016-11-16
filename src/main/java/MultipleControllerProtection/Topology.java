@@ -34,9 +34,9 @@ public class Topology {
 	Topology(List<String> jsonlist) {
 		//コントローラの数に応じてcontroller○を変える
 		TopologyInfo controller1 = new TopologyInfo();
-		TopologyInfo controller2 = new TopologyInfo();
+		//TopologyInfo controller2 = new TopologyInfo();
 		local_topology.add(controller1);
-		local_topology.add(controller2);
+		//local_topology.add(controller2);
 		
 		//JSON情報をオブジェクトとして扱えるように処理
 		for(int i = 0; i < jsonlist.size(); i++){
@@ -78,7 +78,7 @@ public class Topology {
 
 
 		//コントローラ毎にタイセットを作成
-		
+		/*
 		MakeTieset[] maketieset_part = new MakeTieset[local_topology.size()];
 		//重複したリンクの除去
 		removeEdgeRepetition_part();
@@ -94,6 +94,7 @@ public class Topology {
 			addTiesetIDtoNode_part(num);
 			MakeTiesetGraph_part(num);
 		}
+		*/
 		
 		//全体グラフとローカルグラフにコントローラIDを設定
 		set_controller_id();
@@ -385,9 +386,10 @@ public class Topology {
 					Node.controller_id_set.add(controller_id + 1);
 					
 					//ローカルコントローラへの設定
-					SearchNode_part(node_id_int,controller_id).controller_id = controller_id + 1;
-					//System.out.println("重複有無テスト"+node_id_int+"controller_id"+SearchNode(node_id_int).controller_id);
-					//System.out.println(SearchNode(node_id_int).controller_id);
+					//コントローラが2つ以上ある場合
+					if(1 < local_topology.size()){
+						SearchNode_part(node_id_int,controller_id).controller_id = controller_id + 1;						
+					}
 				}
 			}
 		}
