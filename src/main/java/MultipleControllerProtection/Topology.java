@@ -17,6 +17,7 @@ import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 
 public class Topology {
+	int controller_num;
 	Node[] globalNode;
 	List<Tieset> tiesetList = new ArrayList<Tieset>();
 	Graph<Node, Integer> globalGraph = new UndirectedSparseGraph<Node, Integer>();
@@ -32,14 +33,11 @@ public class Topology {
 	String host = "host";
 
 	Topology(List<String> jsonlist) {
-		//コントローラの数に応じてcontroller○を変える
-		TopologyInfo controller1 = new TopologyInfo();
-		//TopologyInfo controller2 = new TopologyInfo();
-		local_topology.add(controller1);
-		//local_topology.add(controller2);
+		controller_num = jsonlist.size();
+		setController(controller_num);
 		
 		//JSON情報をオブジェクトとして扱えるように処理
-		for(int i = 0; i < jsonlist.size(); i++){
+		for(int i = 0; i < controller_num; i++){
 			
 			ObjectMapper mapper = new ObjectMapper();
 			try {
@@ -81,23 +79,7 @@ public class Topology {
 
 
 		//コントローラ毎にタイセットを作成
-		/*
-		MakeTieset[] maketieset_part = new MakeTieset[local_topology.size()];
-		//重複したリンクの除去
-		removeEdgeRepetition_part();
-		for(int num = 0; num < local_topology.size(); num++){
-			//不必要な情報を除去（JSON情報に不必要な情報が混ざるため）
-			removeRepetition_local(num);
-			
-			//グラフの作成
-			addNode2(num);
-			addEdge_local(local_topology.get(num).source_tp, local_topology.get(num).dst_tp, num);
-			maketieset_part[num] = new MakeTieset(local_topology.get(num).graph, local_topology.get(num).node);
-			local_topology.get(num).tiesetList =maketieset_part[num].tiesetList;
-			addTiesetIDtoNode_part(num);
-			MakeTiesetGraph_part(num);
-		}
-		*/
+		makeTiesetEachController();
 		
 		//全体グラフとローカルグラフにコントローラIDを設定
 		set_controller_id();
@@ -460,6 +442,51 @@ public class Topology {
 		for(Node node: globalNode){
 			node.ifBorderNode();
 		}
+	}
+	
+	private void makeTiesetEachController(){
+		if(1 < controller_num){
+			MakeTieset[] maketieset_part = new MakeTieset[local_topology.size()];
+			//重複したリンクの除去
+			removeEdgeRepetition_part();
+			for(int num = 0; num < local_topology.size(); num++){
+				//不必要な情報を除去（JSON情報に不必要な情報が混ざるため）
+				removeRepetition_local(num);
+				
+				//グラフの作成
+				addNode2(num);
+				addEdge_local(local_topology.get(num).source_tp, local_topology.get(num).dst_tp, num);
+				maketieset_part[num] = new MakeTieset(local_topology.get(num).graph, local_topology.get(num).node);
+				local_topology.get(num).tiesetList =maketieset_part[num].tiesetList;
+				addTiesetIDtoNode_part(num);
+				MakeTiesetGraph_part(num);
+			}
+		}
+	}
+	
+	private void setController(int controller_num){
+		//コントローラの数に応じてcontrolleを変える
+		if(controller_num == 1){
+			TopologyInfo controller1 = new TopologyInfo();
+			local_topology.add(controller1);
+		}
+		
+		if(controller_num == 2){
+			TopologyInfo controller1 = new TopologyInfo();
+			TopologyInfo controller2 = new TopologyInfo();
+			local_topology.add(controller1);
+			local_topology.add(controller2);
+		}
+		
+		if(controller_num == 3){
+			TopologyInfo controller1 = new TopologyInfo();
+			TopologyInfo controller2 = new TopologyInfo();
+			TopologyInfo controller3 = new TopologyInfo();
+			local_topology.add(controller1);
+			local_topology.add(controller2);
+			local_topology.add(controller3);
+		}
+		
 	}
 	
 	public void showTest(){
