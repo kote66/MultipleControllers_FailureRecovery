@@ -4,10 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 
+import edu.uci.ics.jung.graph.Graph;
+
 public class CoreNodeFlow  extends MakeFlow{
 
-	CoreNodeFlow(Node[] globalNode) {
+	CoreNodeFlow(List<Tieset>tiesetList, Node[] globalNode, Graph<Node,Integer> globalGraph, Graph<Integer, TiesetEdge> tiesetGraph ,List<Integer> globalNode_ID) {
+		this.tiesetList = tiesetList;
 		this.globalNode = globalNode;
+		this.globalGraph = globalGraph;
+		this.tiesetGraph = tiesetGraph;
+		this.globalNode_ID = globalNode_ID;
 	}
 
 	//BorderNodeにフロー追加

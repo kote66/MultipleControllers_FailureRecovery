@@ -3,10 +3,17 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 
+import edu.uci.ics.jung.graph.Graph;
+
 public class BorderNodeFlow extends MakeFlow{
 	MakeXML makexml = new MakeXML();
-	BorderNodeFlow(Node[] globalNode) {
+	
+	BorderNodeFlow(List<Tieset>tiesetList, Node[] globalNode, Graph<Node,Integer> globalGraph, Graph<Integer, TiesetEdge> tiesetGraph ,List<Integer> globalNode_ID) {
+		this.tiesetList = tiesetList;
 		this.globalNode = globalNode;
+		this.globalGraph = globalGraph;
+		this.tiesetGraph = tiesetGraph;
+		this.globalNode_ID = globalNode_ID;
 	}
 
 	//BorderNodeにフロー追加
@@ -26,7 +33,7 @@ public class BorderNodeFlow extends MakeFlow{
 					//次タイセットの取得
 					List<Node> local_shortest_node = findShortestPath(node, Node.host_node_map.get(IP));
 					int local_tieset_id= findNextTieset(local_shortest_node);
-
+					
 					//逆方向のタイセットID取得
 					Tieset local_target_tieset = findTieset(local_tieset_id);
 

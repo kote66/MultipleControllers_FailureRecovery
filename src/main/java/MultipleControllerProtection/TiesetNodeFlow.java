@@ -7,6 +7,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class TiesetNodeFlow extends MakeFlow{
 	MakeXML makexml = new MakeXML();
+	
 	TiesetNodeFlow(List<Tieset> tiesetList) {
 		this.tiesetList = tiesetList;
 		Node.flow_counter = 0;

@@ -15,8 +15,12 @@ import edu.uci.ics.jung.graph.Graph;
 public class EdgeNodeFlow extends MakeFlow{
 	MakeXML makexml = new MakeXML();
 	static int edge_group_id = 4001;
-	EdgeNodeFlow(Node[] globalNode) {
+	EdgeNodeFlow(List<Tieset>tiesetList, Node[] globalNode, Graph<Node,Integer> globalGraph, Graph<Integer, TiesetEdge> tiesetGraph ,List<Integer> globalNode_ID) {
+		this.tiesetList = tiesetList;
 		this.globalNode = globalNode;
+		this.globalGraph = globalGraph;
+		this.tiesetGraph = tiesetGraph;
+		this.globalNode_ID = globalNode_ID;
 	}
 	
 	//EdgeNodeにフロー追加（ホストから出力）
@@ -36,7 +40,10 @@ public class EdgeNodeFlow extends MakeFlow{
 				//nodeと宛先ノードのcontroller_idが一致（ローカルコントローラ内）
 				if(node.host_node_map.get(IP).controller_id == node.controller_id){
 					//スタート：対象境界ノード、 ゴール：エッジノード
-					List<Node> local_shortest_node = findShortestPath(node, node.host_node_map.get(IP));
+
+					
+					List<Node> local_shortest_node = findShortestPath(node, Node.host_node_map.get(IP));
+
 					int local_tieset_id= findNextTieset(local_shortest_node);
 					//System.out.println("tieset_id"+local_tieset_id);
 					Tieset local_target_tieset = findTieset(local_tieset_id);
