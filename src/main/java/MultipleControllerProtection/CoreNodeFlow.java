@@ -30,7 +30,7 @@ public class CoreNodeFlow  extends MakeFlow{
 				}
 
 				int output_port = 0;
-				//宛先コントローラに所属するコアノードへ転送する
+				//宛先コントローラに所属するコアノードへ転送する（下記の実装が済んだら必要なくなる）
 				for(Node neighbor : node.neighborNode){
 					if(neighbor.controller_id == controller_id){
 						//出力ノード
@@ -39,6 +39,9 @@ public class CoreNodeFlow  extends MakeFlow{
 				}
 				//未実装
 				//アルゴリズム全てのローカルコアノードから最短距離のノードを選び、転送
+				//最短経路を中継するノードにフローエントリを設定する
+				//問題：ノード毎にフローエントリを設定しているため、他のノードへ設定することができない
+				//経路を中継するノードにフローを設定し、コアノードで転送とIDの付与を行う
 				int local_shortext_node_size = -1;
 				List<Node> most_shortest_node = new ArrayList<Node>();
 				for(Node dst_node : coreNodeList){
@@ -55,7 +58,7 @@ public class CoreNodeFlow  extends MakeFlow{
 				//次タイセット
 				//出力ポートの決定
 				
-				 
+				
 				//MakeGroup
 				int F_watch_port = output_port;
 				//int S_watch_port = reverese_output_port;
