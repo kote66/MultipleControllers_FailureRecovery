@@ -50,10 +50,9 @@ public class Topology {
 		}
 	}
 
-	
 	public void exeTopology() {
 		//コントローラ毎のトポロジ情報を整理
-		for(int num = 0; num < local_topology.size(); num ++){
+		for(int num = 0; num < controller_num; num ++){
 			Arrange(local_topology.get(num).rootNode, num);
 			addNode(num);
 		}
@@ -76,8 +75,6 @@ public class Topology {
 		//境界ノードの判定
 		booleanBorder();
 		
-
-
 		//コントローラ毎にタイセットを作成
 		makeTiesetEachController();
 		
@@ -85,8 +82,6 @@ public class Topology {
 		set_controller_id();
 		setNextControllerID(globalNode);
 	}
-
-
 
 	private void Arrange(JsonNode rootNode, int controller_id) {
 		//各コントローラにトポロジ情報追加
@@ -358,7 +353,7 @@ public class Topology {
 	}
 
 	private void set_controller_id(){
-		for(int controller_id = 0; controller_id < local_topology.size(); controller_id++){
+		for(int controller_id = 0; controller_id < controller_num; controller_id++){
 			for(String node_id :local_topology.get(controller_id).node_id){
 				//System.out.println("test"+node_id + "controller_id"+controller_id);
 				if(node_id.startsWith("host")){
@@ -372,7 +367,7 @@ public class Topology {
 					
 					//ローカルコントローラへの設定
 					//コントローラが2つ以上ある場合
-					if(1 < local_topology.size()){
+					if(1 < controller_num){
 						SearchNode_part(node_id_int,controller_id).controller_id = controller_id + 1;						
 					}
 				}
@@ -381,7 +376,7 @@ public class Topology {
 	}
 	/*
 	private void local_set_controller_id(){
-		for(int controller_id = 0; controller_id < local_topology.size(); controller_id++){
+		for(int controller_id = 0; controller_id < controller_num; controller_id++){
 			for(String node_id :local_topology.get(controller_id).node_id){
 				//System.out.println("test"+node_id + "controller_id"+controller_id);
 				if(node_id.startsWith("host")){
@@ -446,10 +441,10 @@ public class Topology {
 	
 	private void makeTiesetEachController(){
 		if(1 < controller_num){
-			MakeTieset[] maketieset_part = new MakeTieset[local_topology.size()];
+			MakeTieset[] maketieset_part = new MakeTieset[controller_num];
 			//重複したリンクの除去
 			removeEdgeRepetition_part();
-			for(int num = 0; num < local_topology.size(); num++){
+			for(int num = 0; num < controller_num; num++){
 				//不必要な情報を除去（JSON情報に不必要な情報が混ざるため）
 				removeRepetition_local(num);
 				
@@ -497,7 +492,7 @@ public class Topology {
 		System.out.println("test");
 		System.out.println(globalNode[3].controller_id);
 		System.out.println("----------------------------------------------------------");
-		for(int num = 0; num < local_topology.size(); num++){
+		for(int num = 0; num < controller_num; num++){
 			System.out.println("コントローラ"+num+"のグラフ");
 			System.out.println(local_topology.get(num).graph);
 			System.out.println("----------------------------------------------------------");
