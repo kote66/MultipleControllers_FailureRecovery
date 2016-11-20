@@ -35,10 +35,10 @@ public class Topology {
 	Topology(List<String> jsonlist) {
 		controller_num = jsonlist.size();
 		setController(controller_num);
-		
+
 		//JSON情報をオブジェクトとして扱えるように処理
 		for(int i = 0; i < controller_num; i++){
-			
+
 			ObjectMapper mapper = new ObjectMapper();
 			try {
 				local_topology.get(i).rootNode = (mapper.readTree(jsonlist.get(i)));
@@ -50,7 +50,7 @@ public class Topology {
 		}
 	}
 
-	public void exeTopology() {
+	public void makaGraph() {
 		//コントローラ毎のトポロジ情報を整理
 		for(int num = 0; num < controller_num; num ++){
 			Arrange(local_topology.get(num).rootNode, num);
@@ -58,29 +58,27 @@ public class Topology {
 		}
 		//重複しているリンクの除去
 		removeRepetition();
-		
+
 		//全体グラフの作成
 		addGrobalNode();	
 		addGrobalEdge(global_src_tp, global_dst_tp);
 		setHostInfo();
-		
+	}
+
+	public void makeTieset(){
 		//タイセットの作成
 		MakeTieset maketieset = new MakeTieset(globalGraph, globalNode);
 		this.tiesetList =maketieset.tiesetList;
 		addTiesetIDtoNode();
-		
+
 		//タイセットグラフの作成
 		MakeTiesetGraph();
-		
+
 		//境界ノードの判定
 		booleanBorder();
-		
+
 		//コントローラ毎にタイセットを作成
 		makeTiesetEachController();
-		
-		//全体グラフとローカルグラフにコントローラIDを設定
-		set_controller_id();
-		setNextControllerID(globalNode);
 	}
 
 	private void Arrange(JsonNode rootNode, int controller_id) {
@@ -201,7 +199,7 @@ public class Topology {
 		}
 		return null;
 	}
-	
+
 	private Node SearchNode_part(int node_id, int num) {
 		for (Node nodenum : local_topology.get(num).node) {
 			if (nodenum.node_id == node_id) {
@@ -352,19 +350,19 @@ public class Topology {
 		local_topology.get(num).TiesetGraph = tiesetgraph.getTiesetGraph();
 	}
 
-	private void set_controller_id(){
+	public void set_controller_id(){
 		for(int controller_id = 0; controller_id < controller_num; controller_id++){
 			for(String node_id :local_topology.get(controller_id).node_id){
 				//System.out.println("test"+node_id + "controller_id"+controller_id);
 				if(node_id.startsWith("host")){
-					
+
 				}
 				else{
 					String node_id_str = RemoveOpenFlow(node_id);
 					int node_id_int = Integer.valueOf(node_id_str);
 					SearchNode(node_id_int).controller_id = controller_id + 1;
 					Node.controller_id_set.add(controller_id + 1);
-					
+
 					//ローカルコントローラへの設定
 					//コントローラが2つ以上ある場合
 					if(1 < controller_num){
@@ -380,14 +378,14 @@ public class Topology {
 			for(String node_id :local_topology.get(controller_id).node_id){
 				//System.out.println("test"+node_id + "controller_id"+controller_id);
 				if(node_id.startsWith("host")){
-					
+
 				}
 				else{
 					String node_id_str = RemoveOpenFlow(node_id);
 					int node_id_int = Integer.valueOf(node_id_str);
 					SearchNode(node_id_int).controller_id = controller_id + 1;
 					Node.controller_id_set.add(controller_id + 1);
-					
+
 					//ローカルコントローラへの設定
 					//SearchNode_part(node_id_int,controller_id).controller_id = controller_id + 1;
 					//SearchNode_part(node_id_int,controller_id).controller_id_set.add(controller_id + 1);
@@ -397,16 +395,19 @@ public class Topology {
 			}
 		}
 	}
-	*/
+	 */
 
 	//リファクタリング：コントローラが3つ以上あっても対応可能にする
-	public void setControllerIP(String ControllerIP1, String ControllerIP2){
+	public void setControllerIP(String ControllerIP1, String ControllerIP2, String ControllerIP3){
 		for(Node node : globalNode){
 			if(node.controller_id == 1){
 				node.belong_to_IP = ControllerIP1;
 			}
 			if(node.controller_id == 2){
 				node.belong_to_IP = ControllerIP2;
+			}
+			if(node.controller_id == 3){
+				node.belong_to_IP = ControllerIP3;
 			}
 		}
 	}
@@ -420,7 +421,7 @@ public class Topology {
 	}
 
 
-	private void setNextControllerID(Node[] nodeList){
+	public void setNextControllerID(Node[] nodeList){
 		for(Node node : nodeList){
 			//次ノードが対象ノードのcontroller_id以外である場合
 			for(Node next_node : node.mapNextNode.keySet()){
@@ -432,13 +433,13 @@ public class Topology {
 			}
 		}
 	}
-	
+
 	private void booleanBorder(){
 		for(Node node: globalNode){
 			node.ifBorderNode();
 		}
 	}
-	
+
 	private void makeTiesetEachController(){
 		if(1 < controller_num){
 			MakeTieset[] maketieset_part = new MakeTieset[controller_num];
@@ -447,7 +448,7 @@ public class Topology {
 			for(int num = 0; num < controller_num; num++){
 				//不必要な情報を除去（JSON情報に不必要な情報が混ざるため）
 				removeRepetition_local(num);
-				
+
 				//グラフの作成
 				addNode2(num);
 				addEdge_local(local_topology.get(num).source_tp, local_topology.get(num).dst_tp, num);
@@ -458,21 +459,21 @@ public class Topology {
 			}
 		}
 	}
-	
+
 	private void setController(int controller_num){
 		//コントローラの数に応じてcontrolleを変える
 		if(controller_num == 1){
 			TopologyInfo controller1 = new TopologyInfo();
 			local_topology.add(controller1);
 		}
-		
+
 		if(controller_num == 2){
 			TopologyInfo controller1 = new TopologyInfo();
 			TopologyInfo controller2 = new TopologyInfo();
 			local_topology.add(controller1);
 			local_topology.add(controller2);
 		}
-		
+
 		if(controller_num == 3){
 			TopologyInfo controller1 = new TopologyInfo();
 			TopologyInfo controller2 = new TopologyInfo();
@@ -481,9 +482,9 @@ public class Topology {
 			local_topology.add(controller2);
 			local_topology.add(controller3);
 		}
-		
+
 	}
-	
+
 	public void showTest(){
 		System.out.println("全体グラフ");
 		System.out.println(globalGraph.toString());

@@ -8,12 +8,11 @@ import edu.uci.ics.jung.graph.Graph;
 
 public class CoreNodeFlow  extends MakeFlow{
 
-	CoreNodeFlow(List<Tieset>tiesetList, Node[] globalNode, Graph<Node,Integer> globalGraph, Graph<Integer, TiesetEdge> tiesetGraph ,List<Integer> globalNode_ID) {
+	CoreNodeFlow(List<Tieset>tiesetList, Node[] globalNode, Graph<Node,Integer> globalGraph, Graph<Integer, TiesetEdge> tiesetGraph) {
 		this.tiesetList = tiesetList;
 		this.globalNode = globalNode;
 		this.globalGraph = globalGraph;
 		this.tiesetGraph = tiesetGraph;
-		this.globalNode_ID = globalNode_ID;
 	}
 
 	//BorderNodeにフロー追加

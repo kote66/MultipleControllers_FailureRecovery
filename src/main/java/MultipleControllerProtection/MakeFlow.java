@@ -11,7 +11,6 @@ import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 public class MakeFlow {
 
 	Node[] globalNode;
-	List<Integer> globalNode_ID = new ArrayList<Integer>();
 	List<Tieset> tiesetList = new ArrayList<Tieset>();
 	Graph<Node, Integer> globalGraph = new UndirectedSparseGraph<Node, Integer>();
 	Graph<Integer, TiesetEdge> tiesetGraph = new UndirectedSparseGraph<Integer, TiesetEdge>();
