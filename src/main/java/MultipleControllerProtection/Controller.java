@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 
-public class TopologyInfo {
+public class Controller {
 	Node[] node;
 	List<Tieset> tiesetList = new ArrayList<Tieset>();
 	Graph<Node, Integer> graph = new UndirectedSparseGraph<Node, Integer>();

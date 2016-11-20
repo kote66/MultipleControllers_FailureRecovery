@@ -24,7 +24,7 @@ public class Topology {
 	Graph<Integer, TiesetEdge> TiesetGraph = new UndirectedSparseGraph<Integer, TiesetEdge>();
 	ArrayList<Integer> NodeNextNode = new ArrayList<Integer>();
 	Map<String, String> ChangeMac_toIP = new HashMap<String, String>();
-	List<TopologyInfo> local_topology = new ArrayList<TopologyInfo>();
+	List<Controller> local_topology = new ArrayList<Controller>();
 	List<Integer> globalNode_ID = new ArrayList<Integer>();	
 	List<String> global_src_tp = new ArrayList<String>();
 	List<String> global_dst_tp = new ArrayList<String>();
@@ -463,21 +463,21 @@ public class Topology {
 	private void setController(int controller_num){
 		//コントローラの数に応じてcontrolleを変える
 		if(controller_num == 1){
-			TopologyInfo controller1 = new TopologyInfo();
+			Controller controller1 = new Controller();
 			local_topology.add(controller1);
 		}
 
 		if(controller_num == 2){
-			TopologyInfo controller1 = new TopologyInfo();
-			TopologyInfo controller2 = new TopologyInfo();
+			Controller controller1 = new Controller();
+			Controller controller2 = new Controller();
 			local_topology.add(controller1);
 			local_topology.add(controller2);
 		}
 
 		if(controller_num == 3){
-			TopologyInfo controller1 = new TopologyInfo();
-			TopologyInfo controller2 = new TopologyInfo();
-			TopologyInfo controller3 = new TopologyInfo();
+			Controller controller1 = new Controller();
+			Controller controller2 = new Controller();
+			Controller controller3 = new Controller();
 			local_topology.add(controller1);
 			local_topology.add(controller2);
 			local_topology.add(controller3);
