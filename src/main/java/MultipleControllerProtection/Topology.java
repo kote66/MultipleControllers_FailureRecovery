@@ -411,6 +411,17 @@ public class Topology {
 			}
 		}
 	}
+	
+	public void setControllerIP(String ControllerIP1, String ControllerIP2){
+		for(Node node : globalNode){
+			if(node.controller_id == 1){
+				node.belong_to_IP = ControllerIP1;
+			}
+			if(node.controller_id == 2){
+				node.belong_to_IP = ControllerIP2;
+			}
+		}
+	}
 
 	public void setControllerIP(String ControllerIP1){
 		for(Node node : globalNode){
