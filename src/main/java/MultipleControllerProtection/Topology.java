@@ -499,10 +499,8 @@ public class Topology {
 	public void showTest(){
 		System.out.println("全体グラフ");
 		System.out.println(globalGraph.toString());
-		System.out.println("全体グラフ");
+		System.out.println("タイセットグラフ");
 		System.out.println(TiesetGraph);
-		System.out.println("test");
-		System.out.println(globalNode[3].controller_id);
 		System.out.println("----------------------------------------------------------");
 		for(int num = 0; num < controller_num; num++){
 			System.out.println("コントローラ"+num+"のグラフ");

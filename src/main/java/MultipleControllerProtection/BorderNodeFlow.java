@@ -7,7 +7,7 @@ import edu.uci.ics.jung.graph.Graph;
 
 public class BorderNodeFlow extends MakeFlow{
 	MakeXML makexml = new MakeXML();
-	
+
 	BorderNodeFlow(List<Tieset>tiesetList, Node[] globalNode, Graph<Node,Integer> globalGraph, Graph<Integer, TiesetEdge> tiesetGraph) {
 		this.tiesetList = tiesetList;
 		this.globalNode = globalNode;
@@ -32,7 +32,7 @@ public class BorderNodeFlow extends MakeFlow{
 					//次タイセットの取得
 					List<Node> local_shortest_node = findShortestPath(node, Node.host_node_map.get(IP));
 					int local_tieset_id= findNextTieset(local_shortest_node);
-					
+
 					//逆方向のタイセットID取得
 					Tieset local_target_tieset = findTieset(local_tieset_id);
 
