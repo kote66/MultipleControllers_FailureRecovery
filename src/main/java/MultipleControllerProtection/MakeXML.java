@@ -187,22 +187,21 @@ public class MakeXML {
 		node.flow_counter++;
 	}
 	
-	//エッジノード（宛先がコントローラ外）
-	public void EdgeNodeflowPushVlan(Node node, String IP, int group_id, int priority, int in_port_int) throws ParserConfigurationException {
+	//エッジノード（宛先がコントローラ内）
+	public void EdgeNodeflowPushVlan(Node node, String mac, int group_id, int priority, int in_port_int) throws ParserConfigurationException {
 
 		Element product = make_flow_xml(node, priority);
 		Element match = make_match(product);
 		Element in_port = new Element("in-port",ns);
 		String in_port_str = String.valueOf(in_port_int);
-		make_ethertype_match(match, "2048");
+		make_ethertype_match_mac(match, mac);
 		match.addContent(in_port);
 		in_port.addContent(in_port_str);
-		make_ip_match(match, IP+"/32");
 		make_instructions(product, group_id);
 
 		Document document = new Document(product);
 		XMLOutputter xout = new XMLOutputter(XMLOUTPUT);
-		//System.out.println(xout.outputString(document));
+		System.out.println(xout.outputString(document));
 		
 		//フローエントリの追加
 		rest_request.PostXML(PostUri(node.belong_to_IP), xout.outputString(document));
@@ -387,6 +386,17 @@ public class MakeXML {
 		match.addContent(ethernet_match);
 		ethernet_match.addContent(ethernet_type);
 		ethernet_type.addContent(new Element("type",ns).setText(ethertype));
+	}
+	
+	//mac
+	public void make_ethertype_match_mac(Element match, String mac){
+		Element ethernet_match = new Element("ethernet-match",ns);
+		Element ethernet_destination = new Element("ethernet-destination",ns);
+		
+		match.addContent(ethernet_match);
+		
+		ethernet_match.addContent(ethernet_destination);
+		ethernet_destination.addContent(new Element("address",ns).setText(mac));
 	}
 
 	public void vlan_match(Element match, int tieset_id){

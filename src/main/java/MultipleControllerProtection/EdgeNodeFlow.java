@@ -65,9 +65,10 @@ public class EdgeNodeFlow extends MakeFlow{
 
 					//MakeFlow
 					Set<String> hostList= node.Hostmap.keySet();
+					String mac = Node.ChangeIP_toMac.get(IP);
 					for(String host : hostList){
 						int in_port = node.Hostmap.get(host);
-						makexml.EdgeNodeflowPushVlan(node, IP, group_id, 200, in_port);
+						makexml.EdgeNodeflowPushVlan(node, mac, group_id, 200, in_port);
 
 					}
 					group_id++;
