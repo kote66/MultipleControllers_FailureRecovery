@@ -65,7 +65,7 @@ public class MakeXML {
 		//フローエントリの追加
 		rest_request.PostXML(PostUri(node.belong_to_IP), xout.outputString(document));
 		Node.flow_counter++;
-		System.out.println(xout.outputString(document));
+		//System.out.println(xout.outputString(document));
 	}
 
 	public void tiesetgroup(Node node, int group_id, List<Integer> watch_port) throws ParserConfigurationException{

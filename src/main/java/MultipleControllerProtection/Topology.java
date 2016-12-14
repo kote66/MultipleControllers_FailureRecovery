@@ -114,6 +114,7 @@ public class Topology {
 			String host_mac = local_topology.get(controller_id).host_mac.get(i);
 			String host_ip = local_topology.get(controller_id).host_ip.get(i);
 			ChangeMac_toIP.put("host:" + host_mac, host_ip );
+			Node.ChangeIP_toMac.put(host_ip, host_mac);
 		}
 	}
 

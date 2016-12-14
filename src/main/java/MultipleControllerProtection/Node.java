@@ -12,6 +12,7 @@ public class Node {
 	List<Integer> TiesetID = new ArrayList<Integer>();
 	List<Node>  neighborNode = new ArrayList<Node>();
 	List<String> HostID = new ArrayList<String>();
+	static Map<String, String> ChangeIP_toMac = new HashMap<String, String>();
 	static HashSet<String> IPSet = new HashSet<String>();
 	static HashSet<Integer> controller_id_set = new HashSet<Integer>();
 	static int flow_counter;
