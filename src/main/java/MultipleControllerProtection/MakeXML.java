@@ -65,6 +65,7 @@ public class MakeXML {
 		//フローエントリの追加
 		rest_request.PostXML(PostUri(node.belong_to_IP), xout.outputString(document));
 		Node.flow_counter++;
+		System.out.println(xout.outputString(document));
 	}
 
 	public void tiesetgroup(Node node, int group_id, List<Integer> watch_port) throws ParserConfigurationException{
@@ -236,6 +237,7 @@ public class MakeXML {
 		node.flow_counter++;
 	}
 
+	//宛先がローカルコントローラ内
 	public void local_EdgeNodeGroupPushVlan(Node node, int group_id, int F_watch_port, int S_watch_port, int F_tieset_id, int S_tieset_id) throws ParserConfigurationException{
 		
 		Element product = make_group_xml(group_id, node.node_id);
@@ -400,7 +402,7 @@ public class MakeXML {
 		vlan_id.addContent(vlan_id_present);
 		vlan_id.addContent(vlan_id_inter);
 		vlan_id_inter.addContent(vlan_id_str);
-		make_ethertype_match(match, "2048");
+		//make_ethertype_match(match, "2048");
 	}
 
 	private void mpls_match(Element match, String mpls){
