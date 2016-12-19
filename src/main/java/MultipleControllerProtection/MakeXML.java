@@ -100,12 +100,11 @@ public class MakeXML {
 	}
 	
 	//タイセット境界ノード（宛先がコントローラ内）
-	public void localBorderNodeFlow(Node node, String DstIP, int group_id, int priority) throws ParserConfigurationException {
+	public void localBorderNodeFlow(Node node, String mac, int group_id, int priority) throws ParserConfigurationException {
 		
 		Element product = make_flow_xml(node, priority);
 		Element match = make_match(product);
-		make_ethertype_match(match, "2048");
-		make_ip_match(match, DstIP+"/32");
+		make_ethertype_match_mac(match, mac);
 		make_instructions(product, group_id);
 		
 		Document document = new Document(product);
@@ -136,13 +135,12 @@ public class MakeXML {
 	}
 	
 	//ループ障害への対応
-	public void BorderNodeFlow_loop(Node node, String DstIP, int in_port_int, int group_id, int priority) throws ParserConfigurationException {
+	public void BorderNodeFlow_loop(Node node, String mac, int in_port_int, int group_id, int priority) throws ParserConfigurationException {
 
 		Element product = make_flow_xml(node, priority);
 		Element match = make_match(product);
 
-		make_ethertype_match(match, "2048");
-		make_ip_match(match, DstIP+"/32");
+		make_ethertype_match_mac(match, mac);
 		Element in_port = new Element("in-port",ns);
 		String in_port_str = String.valueOf(in_port_int);
 		match.addContent(in_port);
@@ -201,7 +199,7 @@ public class MakeXML {
 
 		Document document = new Document(product);
 		XMLOutputter xout = new XMLOutputter(XMLOUTPUT);
-		System.out.println(xout.outputString(document));
+		//System.out.println(xout.outputString(document));
 		
 		//フローエントリの追加
 		rest_request.PostXML(PostUri(node.belong_to_IP), xout.outputString(document));
@@ -269,12 +267,11 @@ public class MakeXML {
 	
 	//ホストへ転送
 	//Flow
-	public void EdgeNodeFlowHost(Node node, String DstIP, int output_port, int priority, int group_id) throws ParserConfigurationException {
+	public void EdgeNodeFlowHost(Node node, String mac, int output_port, int priority, int group_id) throws ParserConfigurationException {
 		
 		Element product = make_flow_xml(node, priority);
 		Element match = make_match(product);
-		make_ethertype_match(match, "2048");
-		make_ip_match(match, DstIP+"/32");
+		make_ethertype_match_mac(match, mac);
 		make_instructions(product, group_id);
 		
 		Document document = new Document(product);
@@ -296,7 +293,7 @@ public class MakeXML {
 		
 		Document document = new Document(product);	
 		XMLOutputter xout = new XMLOutputter(XMLOUTPUT);
-		//System.out.println(xout.outputString(document));
+		System.out.println(xout.outputString(document));
 		//グループエントリの追加
 		rest_request.PostXML(PostGroupUri(node.belong_to_IP), xout.outputString(document));
 		node.flow_counter++;

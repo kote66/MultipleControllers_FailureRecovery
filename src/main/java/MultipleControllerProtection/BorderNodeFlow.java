@@ -58,14 +58,16 @@ public class BorderNodeFlow extends MakeFlow{
 
 					//フローエントリの作成
 					int priority = 200;
-					makexml.localBorderNodeFlow(node, IP, group_id, priority);
+					String mac = Node.ChangeIP_toMac.get(IP);
+					makexml.localBorderNodeFlow(node, mac, group_id, priority);
 					group_id++;
 
 					//ループ障害対策のフローエントリを追加
 					int in_port = local_F_watch_port;
 					int tieset_id = S_tieset_id;
 					int roop_priority = 400;
-					makexml.BorderNodeFlow_loop(node, IP, in_port, tieset_id, roop_priority);
+					String roop_mac = Node.ChangeIP_toMac.get(IP);
+					makexml.BorderNodeFlow_loop(node, roop_mac, in_port, tieset_id, roop_priority);
 					group_id++;
 				}
 				//宛先ホストがローカルコントローラ外の場合
@@ -113,7 +115,8 @@ public class BorderNodeFlow extends MakeFlow{
 						//ループ障害対策のフローエントリを追加
 						int in_port = F_watch_port;
 						int roop_priority = 400;
-						makexml.BorderNodeFlow_loop(node, IP, in_port, S_tieset_id, roop_priority);
+						String mac = Node.ChangeIP_toMac.get(IP);
+						makexml.BorderNodeFlow_loop(node, mac, in_port, S_tieset_id, roop_priority);
 						group_id++;
 					}
 				}

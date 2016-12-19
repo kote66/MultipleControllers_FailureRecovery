@@ -37,12 +37,12 @@ public class Main {
 		
 		
 		//コントローラ2
-		/*
+		
 		String uri2 ="http://"+ControllerIP2+":8181/restconf/operational/network-topology:network-topology/";
 		RestRequest getJson2 = new RestRequest(); 
 		String json2 =getJson2.GetJSON(uri2); 
 		jsonlist.add(json2);
-		*/
+		
 		
 		//トポロジ情報からグラフの作成
 		Topology topology = new Topology(jsonlist);

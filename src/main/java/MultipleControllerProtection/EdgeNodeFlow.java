@@ -121,10 +121,11 @@ public class EdgeNodeFlow extends MakeFlow{
 
 						//接続しているホスト数だけ繰り返す
 						Set<String> hostList= node.Hostmap.keySet();
+						String mac = Node.ChangeIP_toMac.get(IP);
 						for(String host : hostList){
 							int in_port = node.Hostmap.get(host);
 							//MakeFlow
-							makexml.EdgeNodeflowPushVlan(node, IP, group_id, 200, in_port);
+							makexml.EdgeNodeflowPushVlan(node, mac, group_id, 200, in_port);
 						}
 						group_id++;
 					}
@@ -138,8 +139,9 @@ public class EdgeNodeFlow extends MakeFlow{
 		//接続先のホストに出力
 		int output_port = node.Hostmap.get(IP);
 		//flowの作成
-		makexml.EdgeNodeGroupHost(node, IP, output_port , edge_group_id);
-		makexml.EdgeNodeFlowHost(node, IP,output_port, 300, edge_group_id);
+		String mac = Node.ChangeIP_toMac.get(IP);
+		makexml.EdgeNodeGroupHost(node, mac, output_port , edge_group_id);
+		makexml.EdgeNodeFlowHost(node, mac,output_port, 300, edge_group_id);
 		edge_group_id++;
 	}
 
